@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-h-26 {
+    height: 26px;
+}
+.custom-h-2 {
+    height: 2px;
+}
+.custom-w-26 {
+    width: 26px;
+}
+.custom-t-2 {
+    top: 2px;
+}
+.custom-b-2 {
+    bottom: 2px;
+}
+
