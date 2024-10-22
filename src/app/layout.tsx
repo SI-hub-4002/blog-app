@@ -8,8 +8,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="jp">
-      <body className="relative h-screen">
-        <Navigation />
+      <body className="relative h-screen bg-slate-50">
+        <Navigation/>
         <Header />
         {children}
       </body>

@@ -11,7 +11,7 @@ export default function Header() {
                 </Link>
             </div>
             <div className="relative flex items-center pt-3 gap-2">
-                <Input placeholder=" serch..." className="pl-2 pr-6 bg-slate-100 rounded-lg"/>
+                <Input placeholder=" serch..." className="pl-2 pr-6 bg-slate-100 "/>
                 <SearchIcon className="absolute right-8 h-4 w-4" />
                 <Link href="#">
                     <BellIcon className="h-5 w-5" />
