@@ -3,7 +3,7 @@ import SelectButton from "@/components/features/SelectButton/SelectButton";
 
 export default function Home() {
   return (
-    <div>
+    <div className="h-full">
       <SelectButton />
       <MainContent />
     </div>
