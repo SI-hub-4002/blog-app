@@ -1,18 +1,27 @@
 "use client"
 
-import { HomeIcon, PostIcon, ProfileIcon, SettingIcon } from "@/components/elements/icon/Icons";
+import { HomeIcon, PostIcon, ProfileIcon } from "@/components/elements/icon/Icons";
 import Link from "next/link";
 import "../../../styles/globals.css"
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import fetchUserId from "../../../../lib/actions";
 
 export default function Navigation() {
     const [isOpen, setIsOpen] = useState(false);
+    const [userId, setUserId] = useState<string | null>(null)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const userId = await fetchUserId();
+            setUserId(userId)
+        };
+        fetchData();
+    }, [])
 
     const navList = [
         { icon: HomeIcon, lavel: "Home", href: "/" },
-        { icon: ProfileIcon, lavel: "Profile", href: "#" },
-        { icon: PostIcon, lavel: "Post", href: "/Post" },
-        { icon: SettingIcon, lavel: "Setting", href: "#" },
+        { icon: ProfileIcon, lavel: "Profile", href: userId ? `/profile/${userId}` : "/sign-in" },
+        { icon: PostIcon, lavel: "Post", href: userId ? "/Post" : "/sign-in" },
     ]
 
     return (
@@ -28,13 +37,13 @@ export default function Navigation() {
                 <div className="bg-white p-10 pt-20 h-full">
                     <nav className="flex-col text-gray-700">
                         <ul>
-                        {navList.map(props => {
-                            return (
-                                <li key={props.lavel} className="flex items-center border-b pt-3 pb-3 pl-16 border-gray-500 hover:bg-slate-100">
-                                    <Link href={props.href} onClick={() => setIsOpen(!isOpen)} className="flex items-center gap-2 text-2xl"><props.icon className="h-7 w-7" />{props.lavel}</Link>
-                                </li>
-                            )
-                        })}
+                            {navList.map(props => {
+                                return (
+                                    <li key={props.lavel} className="flex items-center border-b pt-3 pb-3 pl-16 border-gray-500 hover:bg-slate-100">
+                                        <Link href={props.href} onClick={() => setIsOpen(!isOpen)} className="flex items-center gap-2 text-2xl"><props.icon className="h-7 w-7" />{props.lavel}</Link>
+                                    </li>
+                                )
+                            })}
                         </ul>
                     </nav>
                 </div>

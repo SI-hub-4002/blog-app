@@ -1,22 +1,12 @@
-import { auth } from "@clerk/nextjs/server";
 import prisma from "../../../../lib/prisma";
-import { HeartIcon, ShareIcon } from "@/components/elements/icon/Icons";
+import { HeartIcon } from "@/components/elements/icon/Icons";
+import Link from "next/link";
+import Image from "next/image";
 
 export default async function MainContent() {
     let posts = [];
 
-    const { userId } = auth();
-
-    if (!userId) {
-        throw new Error("user not authenticated")
-    }
-
     posts = await prisma.post.findMany({
-        where: {
-            authorId: {
-                in: [userId],
-            }
-        },
         include: {
             author: true,
             likes: {
@@ -29,18 +19,25 @@ export default async function MainContent() {
             createdAt: "desc",
         }
     })
+
     return (
         <div className="absolute w-3/5 custom-t-144 left-1/2 -translate-x-1/2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {posts.map((post) => {
                     return (
                         <div key={`${post.id}`} className="bg-white aspect-square rounded-xl flex flex-col pl-4 pt-4 pr-4">
-                            <div className="h-[75%] border-b border-gray-700 text-2xl flex justify-center items-center">
+                            <Link href={`blogpages/${post.id}`} className="h-[75%] border-b border-gray-700 text-2xl flex justify-center items-center">
                                 {post.title}
-                            </div>
-                            <div className="h-[25%] flex justify-end items-center gap-2 pr-1">
-                                <HeartIcon />
-                                <ShareIcon />
+                            </Link>
+                            <div className="h-[25%] flex items-center p-1 pl-2 gap-4 text-sm overflow-hidden break-words">
+                                <Link href={`/profile/${post.author.id}`} className="flex items-center gap-2 overflow-hidden break-words">
+                                    <Image width={25} height={25} className="rounded-full" src={post.author.image ? post.author.image : ""} alt="User's profile picture" />
+                                    {post.author.username}
+                                </Link>
+                                <div className="flex items-center gap-1">
+                                    <HeartIcon className="w-4 h-4 pt-[2px]" />
+                                    {post.likes.map(like => like.userId).length}
+                                </div>
                             </div>
                         </div>
                     )

@@ -63,6 +63,7 @@ export async function POST(req: Request) {
           image: JSON.parse(body).data.image_url,
         },
       })
+      console.log(JSON.parse(body))
       return new Response("user creation successful", {status: 200})
     } catch(err) {
       console.log(err)

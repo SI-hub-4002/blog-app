@@ -7,7 +7,7 @@ export default function Header() {
     return (
         <div className="relative bg-white text-gray-700 shadow-md p-4 flex items-center justify-end h-20">
             <div className="absolute left-1/2 -translate-x-1/2">
-                <Link href="#">
+                <Link href="/">
                     <span className="text-3xl font-bold">Test</span>
                 </Link>
             </div>

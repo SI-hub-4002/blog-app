@@ -56,3 +56,10 @@ export async function postAction(formData: FormData) {
     }
   }
 }
+
+export default async function fetchUserId () {
+  const {userId} = auth();
+  return(
+    userId
+  )
+}
