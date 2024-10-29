@@ -3,6 +3,8 @@ import { HeartIcon, ShareIcon } from "@/components/elements/icon/Icons";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
+import prisma from "../../../../lib/prisma";
+import { revalidatePath } from "next/cache";
 
 interface PostData {
     id: string;
@@ -30,6 +32,9 @@ interface BlogPageLayoutProps {
 
 export default function BlogPageLayout({ data }: BlogPageLayoutProps) {
     const { userId } = auth();
+    if(!userId) {
+        throw new Error("user is not authenticated")
+    }
 
     const uniqueData = data[0]
 
@@ -39,8 +44,31 @@ export default function BlogPageLayout({ data }: BlogPageLayoutProps) {
 
     const likeAction = async () => {
         "use server"
+        console.log("called")
         try {
+            const existingLike = await prisma.like.findFirst({
+                where: {
+                    userId: userId,
+                    postId: uniqueData.id,
+                },
+            });
 
+            if(existingLike) {
+                await prisma.like.delete({
+                    where: {
+                        id: existingLike.id,
+                    }
+                })
+                revalidatePath(`/blogpages/${uniqueData.id}`);
+            } else {
+                await prisma.like.create({
+                    data: {
+                        userId: userId,
+                        postId: uniqueData.id,
+                    }
+                })
+                revalidatePath(`/blogpages/${uniqueData.id}`);
+            }
         } catch (err) {
             console.log(err);
         }
@@ -51,9 +79,13 @@ export default function BlogPageLayout({ data }: BlogPageLayoutProps) {
             <div className="w-[10%] pl-6 pt-8 pb-6">
                 <div className="h-full flex flex-col items-center gap-2 ">
                     <form action={likeAction}>
-                        <Button className="bg-white h-12 w-12 rounded-full flex items-center justify-center"><HeartIcon className="h-8 w-8" /></Button>
+                        <Button className="bg-white h-12 w-12 rounded-full flex items-center justify-center">
+                            <HeartIcon className="h-8 w-8"/>
+                        </Button>
                     </form>
-                    <Button className="bg-white h-12 w-12 rounded-full flex items-center justify-center"><ShareIcon className="h-8 w-8" /></Button>
+                    <Button className="bg-white h-12 w-12 rounded-full flex items-center justify-center">
+                        <ShareIcon className="h-8 w-8"/>
+                    </Button>
                 </div>
             </div>
             <div className="w-[65%] pr-6 pl-3 pt-6 pb-6">
