@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import prisma from "./prisma";
+import { revalidatePath } from "next/cache";
 
 export async function postAction(formData: FormData) {
   try {
@@ -24,7 +25,7 @@ export async function postAction(formData: FormData) {
     if (!userId) {
       throw new Error("user not authenticated");
     }
-    
+
     await prisma.post.create({
       data: {
         title: validatedPostTitle,
@@ -57,9 +58,65 @@ export async function postAction(formData: FormData) {
   }
 }
 
-export default async function fetchUserId () {
-  const {userId} = auth();
-  return(
-    userId
-  )
+export async function fetchUserId() {
+  const { userId } = auth();
+  return userId;
 }
+
+export async function AllContents() {
+  let posts = [];
+  posts = await prisma.post.findMany({
+    include: {
+      author: true,
+      likes: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return posts;
+}
+
+export async function LikesContents() {
+  const { userId } = auth();
+  if (!userId) {
+    throw new Error("user is not authenticated");
+  }
+
+  let posts = [];
+  posts = await prisma.post.findMany({
+    where: {
+      likes: {
+        some: {
+          userId: userId,
+        },
+      },
+    },
+    include: {
+      author: true,
+      likes: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return posts;
+}
+
+export async function deleteAction (postId: string) {
+  const userId = fetchUserId();
+  await prisma.post.delete({
+      where: {
+          id: postId,
+      }
+  });
+  revalidatePath(`/myprofile/${userId}`);
+};

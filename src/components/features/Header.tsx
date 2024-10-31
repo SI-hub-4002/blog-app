@@ -1,5 +1,5 @@
-import { BellIcon, CircleProfileIcon, SearchIcon } from "@/components/elements/icon/Icons";
-import Input from "@/components/elements/input/Input";
+import { BellIcon, CircleProfileIcon, SearchIcon } from "@/components/elements/Icons";
+import Input from "@/components/elements/Input";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
@@ -8,7 +8,7 @@ export default function Header() {
         <div className="relative bg-white text-gray-700 shadow-md p-4 flex items-center justify-end h-20">
             <div className="absolute left-1/2 -translate-x-1/2">
                 <Link href="/">
-                    <span className="text-3xl font-bold">Test</span>
+                    <span className="text-3xl font-bold">Blog</span>
                 </Link>
             </div>
             <div className="relative flex items-center pt-3 gap-2">
@@ -22,7 +22,7 @@ export default function Header() {
                         <UserButton />
                     </SignedIn>
                     <SignedOut>
-                        <Link href="/sign-up">
+                        <Link href="/sign-in">
                             <CircleProfileIcon className="h-7 w-7 text-gray-700"/>
                         </Link>
                     </SignedOut>

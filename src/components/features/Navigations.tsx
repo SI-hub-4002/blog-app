@@ -1,10 +1,10 @@
 "use client"
 
-import { HomeIcon, PostIcon, ProfileIcon } from "@/components/elements/icon/Icons";
+import { HomeIcon, PostIcon, ProfileIcon } from "@/components/elements/Icons";
 import Link from "next/link";
-import "../../../styles/globals.css"
+import "../../styles/globals.css"
 import { useEffect, useState } from "react";
-import fetchUserId from "../../../../lib/actions";
+import { fetchUserId } from "../../../lib/actions";
 
 export default function Navigation() {
     const [isOpen, setIsOpen] = useState(false);
@@ -16,11 +16,11 @@ export default function Navigation() {
             setUserId(userId)
         };
         fetchData();
-    }, [])
+    }, [isOpen])
 
     const navList = [
         { icon: HomeIcon, lavel: "Home", href: "/" },
-        { icon: ProfileIcon, lavel: "Profile", href: userId ? `/profile/${userId}` : "/sign-in" },
+        { icon: ProfileIcon, lavel: "Profile", href: userId ? `/myprofile/${userId}` : "/sign-in" },
         { icon: PostIcon, lavel: "Post", href: userId ? "/Post" : "/sign-in" },
     ]
 

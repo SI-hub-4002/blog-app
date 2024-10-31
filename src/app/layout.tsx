@@ -1,5 +1,5 @@
-import Header from "@/components/features/Header/Header";
-import Navigation from "@/components/features/Navigations/Navigations";
+import Header from "@/components/features/Header";
+import Navigation from "@/components/features/Navigations";
 import { ClerkProvider } from "@clerk/nextjs";
 
 export default function RootLayout({

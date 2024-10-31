@@ -1,12 +1,13 @@
-import BlogPageLayout from "@/components/features/BlogPageLayout/BlogPageLayout";
+import BlogPageLayout from "@/components/features/BlogPageLayout";
 import prisma from "../../../../lib/prisma";
 
 interface Params {
-    id: string; 
+    id: string;
 }
 
-export default async function BlogPage({params}: { params: Params}) {
+export default async function BlogPage({ params }: { params: Params }) {
     let posts = [];
+    let users = [];
 
     posts = await prisma.post.findMany({
         where: {
@@ -24,9 +25,28 @@ export default async function BlogPage({params}: { params: Params}) {
         },
     })
 
+    users = await prisma.user.findMany({
+        where: {
+            posts: {
+                some: {
+                    id: {
+                        in: [params.id]
+                    }
+                }
+            }
+        },
+        include: {
+            following: {
+                select: {
+                    followingId: true,
+                }
+            }
+        },
+    })
+
     return (
         <div >
-            <BlogPageLayout data={posts}/>
+            <BlogPageLayout postsProps={posts} usersProps={users}/>
         </div>
     );
 }

@@ -1,11 +1,11 @@
+import MyProfileLayout from "@/components/features/MyProfile";
 import prisma from "../../../../lib/prisma";
-import ProfileLayout from "@/components/features/ProfileLayout";
 
 interface Params {
-    id: string;
+    id: string; 
 }
 
-export default async function Profile({ params }: { params: Params }) {
+export default async function Profile({params}: { params: Params}) {
     let posts = [];
 
     posts = await prisma.user.findMany({
@@ -47,7 +47,7 @@ export default async function Profile({ params }: { params: Params }) {
 
     return (
         <div >
-            <ProfileLayout data={posts} />
+            <MyProfileLayout data={posts}/>
         </div>
     );
 }
