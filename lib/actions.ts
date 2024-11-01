@@ -213,7 +213,7 @@ export async function followAction(uniqueData: ProfileData) {
               ]
           },
       });
-
+      console.log("called")
       if (existingFollowerField) {
           await prisma.follower.delete({
               where: {

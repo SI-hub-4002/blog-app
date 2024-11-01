@@ -16,7 +16,7 @@ export default function Header() {
                         <UserButton />
                     </SignedIn>
                     <SignedOut>
-                        <Link href="/sign-in">
+                        <Link href="/sign-up">
                             <CircleProfileIcon className="h-8 w-8 text-gray-700" />
                         </Link>
                     </SignedOut>

@@ -20,7 +20,7 @@ export default function PostForm() {
     }
 
     return (
-        <div className="absolute h-[calc(100%-80px)] w-3/5 left-1/2 -translate-x-1/2 p-6">
+        <div className="absolute h-[calc(100%-80px)] w-[95%] sm:h-4/5 md:w-[70%] lg:w-3/5 left-1/2 -translate-x-1/2 p-6">
             <form action={handleSubmit} className="flex flex-col h-full bg-white">
                 <div className="h-[8%] pl-2 pt-2 pr-2">
                     <Input name="postTitle" placeholder="Title" className="h-full w-full p-1 rounded-none focus:outline-none border border-gray-700" />

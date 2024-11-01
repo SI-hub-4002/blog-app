@@ -20,8 +20,8 @@ export default function Navigation() {
 
     const navList = [
         { icon: HomeIcon, lavel: "Home", href: "/" },
-        { icon: ProfileIcon, lavel: "Profile", href: userId ? `/myprofile/${userId}` : "/sign-in" },
-        { icon: PostIcon, lavel: "Post", href: userId ? "/Post" : "/sign-in" },
+        { icon: ProfileIcon, lavel: "Profile", href: userId ? `/myprofile/${userId}` : "/sign-up" },
+        { icon: PostIcon, lavel: "Post", href: userId ? "/Post" : "/sign-up" },
     ]
 
     return (
