@@ -5,6 +5,32 @@ import { z } from "zod";
 import prisma from "./prisma";
 import { revalidatePath } from "next/cache";
 
+interface ProfileData {
+  id: string;
+  image: string | null;
+  createdAt: Date;
+  update: Date;
+  username: string;
+  bio: string | null;
+  likes: {
+      userId: string;
+  }[];
+  followers: {
+      followerId: string;
+  }[];
+  following: {
+      followingId: string;
+  }[];
+  posts: {
+      id: string;
+      title: string;
+      createdAt: Date;
+      likes: {
+          userId: string;
+      }[];
+  }[];
+};
+
 export async function postAction(formData: FormData) {
   try {
     const postTitle = formData.get("postTitle") as string;
@@ -59,7 +85,7 @@ export async function postAction(formData: FormData) {
 }
 
 export async function fetchUserId() {
-  const { userId } = auth();
+  const {userId} = auth();
   return userId;
 }
 
@@ -83,16 +109,13 @@ export async function AllContents() {
 
 export async function LikesContents() {
   const { userId } = auth();
-  if (!userId) {
-    throw new Error("user is not authenticated");
-  }
 
   let posts = [];
   posts = await prisma.post.findMany({
     where: {
       likes: {
         some: {
-          userId: userId,
+          AND: [...(userId ? [{ userId }] : [])],
         },
       },
     },
@@ -111,12 +134,107 @@ export async function LikesContents() {
   return posts;
 }
 
-export async function deleteAction (postId: string) {
+export async function FollowingContents() {
+  const {userId} = auth();
+  if(!userId) {
+    return;
+  }
+
+  const users = await prisma.user.findMany({
+    where: {
+      following: {
+        some: {
+          followerId: userId,
+        }
+      }
+    },
+    include: {
+      posts: {
+        select: {
+          id: true,
+          title: true,
+          authorId: true,
+          createdAt: true,
+          likes: {
+            select: {
+              userId: true,
+            }
+          }
+        }
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  const posts = users.flatMap(user => {
+    return (user.posts.map(post => {
+      return ({
+      id: post.id,
+      createdAt: post.createdAt,
+      title: post.title,
+      authorId: post.authorId,
+      author: {
+        id: user.id,
+        createdAt: user.createdAt,
+        image: user.image,
+        update: user.update,
+        username: user.username,
+        bio: user.bio
+      },
+      likes: post.likes.map(like => ({
+        userId: like.userId
+      })),
+    })}))
+  })
+  console.log(posts)
+  return posts;
+}
+
+export async function deleteAction(postId: string) {
   const userId = fetchUserId();
   await prisma.post.delete({
-      where: {
-          id: postId,
-      }
+    where: {
+      id: postId,
+    },
   });
   revalidatePath(`/myprofile/${userId}`);
+}
+
+export async function followAction(uniqueData: ProfileData) {
+  const {userId} = auth();
+  try {
+      const existingFollowerField = await prisma.follower.findFirst({
+          where: {
+              AND: [
+                  { followingId: uniqueData.id },
+                  ...(userId ? [{ followerId: userId }] : []),
+              ]
+          },
+      });
+
+      if (existingFollowerField) {
+          await prisma.follower.delete({
+              where: {
+                  id: existingFollowerField.id,
+              }
+          })
+          revalidatePath(`/profile/${uniqueData.id}`);
+      } else {
+          if (userId) {
+              await prisma.follower.create({
+                  data: {
+                      followerId: userId,
+                      followingId: uniqueData.id,
+                  }
+              });
+              revalidatePath(`/profile/${uniqueData.id}`);
+          } else {
+              console.log("user is not authenticated")
+          }
+      }
+  } catch (err) {
+      console.log(err);
+  }
 };

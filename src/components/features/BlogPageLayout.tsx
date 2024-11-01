@@ -181,12 +181,9 @@ export default function BlogPageLayout({ postsProps, usersProps }: BlogPageLayou
                         </Link>
                         {userId && uniquePostData.author.id !== userId && (
                             <form action={followAction}>
-                                <Button className="bg-slate-50 font-normal text-sm p-1">
-                                    {uniqueUserData.following.some(user => user.followingId === uniquePostData.author.id) ? "following" : "follow"}
-                                </Button>
+                                {uniqueUserData.following.some(user => user.followingId === uniqueUserData.id) ? <Button className="bg-slate-50 font-normal text-sm p-1 w-20">following</Button> : <Button className="bg-gray-700 text-white hover:bg-gray-600 font-normal text-sm p-1 w-20">follow</Button>}
                             </form>
                         )}
-
                     </div>
                 </div>
             </div>

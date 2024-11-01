@@ -4,7 +4,8 @@ import { HeartIcon } from "@/components/elements/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { fetchUserId } from "../../../lib/actions";
+import { fetchUserId, followAction } from "../../../lib/actions";
+import Button from "../elements/Button";
 
 interface ProfileData {
     id: string;
@@ -56,12 +57,21 @@ export default function ProfileLayout({ data }: ProfileLayoutProps) {
         throw new Error("image not found");
     }
 
+    const handleFollowAction = () => {
+        followAction(uniqueData);
+    }
+
     return (
         <div className="absolute w-3/5 h-[calc(100vh-80px)] left-1/2 -translate-x-1/2 p-6">
             <div className="h-aute bg-white flex flex-col justify-center items-center p-3 text-2xl gap-4">
                 <div className="pt-3 flex flex-col items-center justify-center gap-2">
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
                     {uniqueData.username}
+                    {userId && uniqueData.id !== userId && (
+                        <form action={handleFollowAction}>
+                            {uniqueData.following.some(user => user.followingId === uniqueData.id) ? <Button className="bg-slate-50 font-normal text-sm p-1 w-20">following</Button> : <Button className="bg-gray-700 text-white hover:bg-gray-600 font-normal text-sm p-1 w-20">follow</Button>}
+                        </form>
+                    )}
                 </div>
                 <div className="flex justify-center items-center text-sm text-black pb-3 border-b">
                     <div className="w-24 border-r flex flex-col gap-2 justify-center items-center">

@@ -5,15 +5,15 @@ import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/elements/Button";
 import { useEffect, useState } from "react";
-import { AllContents, fetchUserId, LikesContents } from "../../../lib/actions";
+import { AllContents, fetchUserId, FollowingContents, LikesContents } from "../../../lib/actions";
 
 interface PostsProps {
     id: string;
     createdAt: Date;
     title: string;
-    content: string;
+    content?: string;
     authorId: string;
-    update: Date;
+    update?: Date;
     author: {
         id: string;
         createdAt: Date;
@@ -26,7 +26,6 @@ interface PostsProps {
         userId: string;
     }[];
 };
-
 type PostsPropsArray = PostsProps[];
 
 export default function MainContent() {
@@ -48,15 +47,15 @@ export default function MainContent() {
             if (btnState == "all") {
                 posts = await AllContents();
                 setPosts(posts);
-                console.log("All is called")
             } else if (btnState == "following") {
-                posts = await LikesContents();
+                posts = await FollowingContents();
+                if(!posts){
+                    return [];
+                }
                 setPosts(posts);
-                console.log("following is called")
             } else {
                 posts = await LikesContents();
                 setPosts(posts);
-                console.log("likes is called")
             }
         };
         sortAction();
@@ -66,9 +65,9 @@ export default function MainContent() {
         <div>
             <div className="absolute z-1 left-1/2 -translate-x-1/2 flex items-center h-16">
                 <div className={`shadow-md rounded-3xl bg-white ${userId ? "" : "hidden"}`}>
-                    <Button type="button" onClick={() => { setBtnState("all") }} className="h-10 w-24 text-lg">All</Button>
-                    <Button type="button" onClick={() => { setBtnState("following") }} className="h-10 w-24 text-lg">Following</Button>
-                    <Button type="button" onClick={() => { setBtnState("likes") }} className="h-10 w-24 text-lg">Likes</Button>
+                    <Button type="button" onClick={() => { setBtnState("all") }} className={`h-10 w-24 text-lg ${btnState === "all" ? "bg-slate-100" : ""}`}>All</Button>
+                    <Button type="button" onClick={() => { setBtnState("following") }} className={`h-10 w-24 text-lg ${btnState === "following" ? "bg-slate-100" : ""}`}>Following</Button>
+                    <Button type="button" onClick={() => { setBtnState("likes") }} className={`h-10 w-24 text-lg ${btnState === "likes" ? "bg-slate-100" : ""}`}>Likes</Button>
                 </div>
             </div>
             <div className="absolute w-3/5 custom-t-144 left-1/2 -translate-x-1/2">
