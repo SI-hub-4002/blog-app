@@ -38,7 +38,7 @@ export default async function BlogPage({ params }: { params: Params }) {
         include: {
             following: {
                 select: {
-                    followingId: true,
+                    followerId: true,
                 }
             }
         },

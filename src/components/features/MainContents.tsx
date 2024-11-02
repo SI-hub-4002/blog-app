@@ -62,17 +62,17 @@ export default function MainContent() {
     }, [btnState]);
 
     return (
-        <div>
-            <div className="absolute z-1 w-4/5 md:w-[70%] lg:w-3/5 left-1/2 -translate-x-1/2 flex items-center h-16">
+        <div className={`flex flex-col items-center ${userId ? "" : "pt-4"}`}>
+            <div className={`w-4/5 md:w-[70%] lg:w-3/5 flex items-center h-16 ${userId ? "" : "hidden"}`}>
                 <div className="w-full flex justify-center">
-                    <div className={`shadow-md rounded-3xl bg-white ${userId ? "" : "hidden"}`}>
+                    <div className="shadow-md rounded-3xl bg-white">
                         <Button type="button" onClick={() => { setBtnState("all") }} className={`h-8 w-20 text-sm sm:h-10 sm:w-24 sm:text-lg ${btnState === "all" ? "bg-slate-100" : ""}`}>All</Button>
                         <Button type="button" onClick={() => { setBtnState("following") }} className={`h-8 w-20 text-sm sm:h-10 sm:w-24 sm:text-lg ${btnState === "following" ? "bg-slate-100" : ""}`}>Following</Button>
                         <Button type="button" onClick={() => { setBtnState("likes") }} className={`h-8 w-20 sm:h-10 text-sm sm:w-24 sm:text-lg ${btnState === "likes" ? "bg-slate-100" : ""}`}>Likes</Button>
                     </div>
                 </div>
             </div>
-            <div className="absolute w-4/5 md:w-[70%] lg:w-3/5 custom-t-144 left-1/2 -translate-x-1/2">
+            <div className="w-4/5 md:w-[70%] lg:w-3/5">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {posts.map((post) => {
                         return (

@@ -16,10 +16,10 @@ interface ProfileData {
       userId: string;
   }[];
   followers: {
-      followerId: string;
+      followingId: string;
   }[];
   following: {
-      followingId: string;
+      followerId: string;
   }[];
   posts: {
       id: string;
@@ -167,6 +167,7 @@ export async function FollowingContents() {
       createdAt: "desc",
     },
   });
+  console.log(users)
 
   const posts = users.flatMap(user => {
     return (user.posts.map(post => {
@@ -188,7 +189,6 @@ export async function FollowingContents() {
       })),
     })}))
   })
-  console.log(posts)
   return posts;
 }
 

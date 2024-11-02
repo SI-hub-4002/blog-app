@@ -17,11 +17,11 @@ interface ProfileData {
     likes: {
         userId: string;
     }[];
-    followers: {
-        followerId: string;
-    }[];
-    following: {
+    followers: { 
         followingId: string;
+    }[]; 
+    following: {
+        followerId: string;
     }[];
     posts: {
         id: string;
@@ -50,8 +50,8 @@ export default function ProfileLayout({ data }: ProfileLayoutProps) {
 
     const uniqueData = data[0]
     const likedUserDataArray = uniqueData.posts.map(post => post.likes.map(user => user.userId));
-    const followersUserDataArray = uniqueData.following.map(user => user.followingId);
-    const followingUserDataArray = uniqueData.followers.map(user => user.followerId);
+    const followersUserDataArray = uniqueData.following.map(user => user.followerId);
+    const followingUserDataArray = uniqueData.followers.map(user => user.followingId);
 
     if (!uniqueData.image) {
         throw new Error("image not found");
@@ -69,7 +69,7 @@ export default function ProfileLayout({ data }: ProfileLayoutProps) {
                     {uniqueData.username}
                     {userId && uniqueData.id !== userId && (
                         <form action={handleFollowAction}>
-                            {uniqueData.following.some(user => user.followingId === uniqueData.id) ? <Button className="bg-slate-50 font-normal text-sm p-1 w-20">following</Button> : <Button className="bg-gray-700 text-white hover:bg-gray-500 font-normal text-sm p-1 w-20">follow</Button>}
+                            {uniqueData.following.some(user => user.followerId === userId) ? <Button className="bg-slate-50 font-normal text-sm p-1 w-20">following</Button> : <Button className="bg-gray-700 text-white hover:bg-gray-600 font-normal text-sm p-1 w-20">follow</Button>}
                         </form>
                     )}
                 </div>
