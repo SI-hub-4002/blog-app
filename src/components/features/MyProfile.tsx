@@ -6,39 +6,11 @@ import Link from "next/link";
 import Button from "@/components/elements/Button";
 import { deleteAction, fetchUserId } from "../../../lib/actions";
 import { useEffect, useState } from "react";
-
-interface ProfileData {
-    id: string;
-    image: string | null;
-    createdAt: Date;
-    update: Date;
-    username: string;
-    bio: string | null;
-    likes: {
-        userId: string;
-    }[];
-    followers: {
-        followerId: string;
-    }[];
-    following: {
-        followingId: string;
-    }[];
-    posts: {
-        id: string;
-        title: string;
-        createdAt: Date;
-        likes: {
-            userId: string;
-        }[];
-    }[];
-};
-
-interface ProfileLayoutProps {
-    data: ProfileData[]
-}
+import { ProfileLayoutProps } from "@/interface/interface";
 
 export default function MyProfileLayout({ data }: ProfileLayoutProps) {
-    const [userId, setUserId] = useState<string | null>(null)
+    const [userId, setUserId] = useState<string | null>(null);
+    const [likeErr, setLikeErr] = useState<string>("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,14 +22,12 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
 
     const uniqueData = data[0]
     const likedUserDataArray = uniqueData.posts.map(post => post.likes.map(user => user.userId));
-    const followersUserDataArray = uniqueData.following.map(user => user.followingId);
-    const followingUserDataArray = uniqueData.followers.map(user => user.followerId);
-
-    const [likeErr, setLikeErr] = useState<string>("")
+    const followersUserDataArray = uniqueData.following.map(user => user.followerId);
+    const followingUserDataArray = uniqueData.followers.map(user => user.followingId);
 
     if (!uniqueData.image) {
         throw new Error("image not found");
-    }
+    };
 
     const handleDeleteAction = async (postId: string) => {
         try {
@@ -66,7 +36,8 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
         } catch {
             setLikeErr("posts that have been liked cannot be deleted");
         }
-    }
+    };
+
     return (
         <div className="absolute w-[95%] md:w-[70%] lg:w-3/5 h-[calc(100vh-80px)] left-1/2 -translate-x-1/2 p-6">
             <div className="h-aute bg-white flex flex-col justify-center items-center p-3 text-2xl gap-4">
@@ -110,7 +81,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                                     </span>
                                 </Link>
                                 <div className="h-[25%] flex justify-end items-center gap-2 pr-1 text-sm">
-                                    {post.likes.map(like => like.userId).some(user => user == userId) ? <HeartIcon className="h-4 w-4 pt-[2px] text-red-500" /> : <HeartIcon className="h-4 w-4 pt-[2px]" />}
+                                    <HeartIcon className={`h-4 w-4 pt-[2px] ${post.likes.map(like => like.userId).some(user => user == userId) ? "text-red-500" : ""}`}/>
                                     {post.likes.map(like => like.userId).length}
                                 </div>
                             </div>

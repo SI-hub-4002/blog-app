@@ -21,15 +21,17 @@ export default function Navigation() {
     const navList = [
         { icon: HomeIcon, lavel: "Home", href: "/" },
         { icon: ProfileIcon, lavel: "Profile", href: userId ? `/myprofile/${userId}` : "/sign-up" },
-        { icon: PostIcon, lavel: "Post", href: userId ? "/Post" : "/sign-up" },
+        { icon: PostIcon, lavel: "Post", href: userId ? "/post" : "/sign-up" },
     ]
+
+    const navBarsCss = "absolute block z-30 h-[2px] w-[26px] left-0 rounded-lg bg-gray-700 transition-all duration-200 ease-linear"
 
     return (
         <div>
-            <button type="button" id="navBtn" onClick={() => setIsOpen(!isOpen)} className={`z-30 left-8 top-8 custom-h-26 custom-w-26 ${isOpen ? "fixed" : "absolute"}`}>
-                <span className={`absolute block z-30 custom-h-2 custom-w-26 left-0 rounded-lg bg-gray-700 transition-all duration-200 ease-linear ${isOpen ? "top-1/2 -translate-y-1/2 rotate-[-315deg]" : "custom-t-2"}`}></span>
-                <span className={`absolute block z-30 custom-h-2 custom-w-26 left-0 rounded-lg bg-gray-700 transition-all duration-200 ease-linear ${isOpen ? "hidden" : "top-1/2 -translate-y-1/2"}`}></span>
-                <span className={`absolute block z-30 custom-h-2 custom-w-26 left-0 rounded-lg bg-gray-700 transition-all duration-200 ease-linear ${isOpen ? "top-1/2 -translate-y-1/2 rotate-[315deg]" : "custom-b-2"}`}></span>
+            <button type="button" id="navBtn" onClick={() => setIsOpen(!isOpen)} className={`z-30 left-8 top-8 h-[26px] w-[26px] ${isOpen ? "fixed" : "absolute"}`}>
+                <span className={`${navBarsCss} ${isOpen ? "top-1/2 -translate-y-1/2 rotate-[-315deg]" : "top-[2px]"}`}></span>
+                <span className={`${navBarsCss} ${isOpen ? "hidden" : "top-1/2 -translate-y-1/2"}`}></span>
+                <span className={`${navBarsCss} ${isOpen ? "top-1/2 -translate-y-1/2 rotate-[315deg]" : "bottom-[2px]"}`}></span>
             </button>
             <div onClick={() => setIsOpen(!isOpen)} className={`fixed ${isOpen ? "bg-black opacity-70 z-10 h-full w-full" : "z-0"}`}>
             </div>
@@ -40,7 +42,10 @@ export default function Navigation() {
                             {navList.map(props => {
                                 return (
                                     <li key={props.lavel} className="flex items-center border-b pt-3 pb-3 pl-16 border-gray-500 hover:bg-slate-100">
-                                        <Link href={props.href} onClick={() => setIsOpen(!isOpen)} className="flex items-center gap-2 text-2xl"><props.icon className="h-7 w-7" />{props.lavel}</Link>
+                                        <Link href={props.href} onClick={() => setIsOpen(!isOpen)} className="flex items-center gap-2 text-2xl">
+                                            <props.icon className="h-7 w-7" />
+                                            {props.lavel}
+                                        </Link>
                                     </li>
                                 )
                             })}

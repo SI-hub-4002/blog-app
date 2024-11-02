@@ -28,9 +28,9 @@ export default function PostForm() {
                 <div className="h-[82%] pl-2 pt-2 pr-2">
                     <Textarea name="postContent" />
                 </div>
-                <div className={`h-[10%] flex items-center gap-2 pr-2 pl-2 ${!error ? "justify-end" : "justify-between"}`}>
+                <div className={`h-[10%] flex items-center gap-2 pr-2 pl-2 ${error ? "justify-between" : "justify-end"}`}>
                     {error && <p className="text-red-500 pl-1">{error}</p>}
-                    <Button type="submit" className="w-12 font-bold bg-slate-50">post</Button>
+                    <Button type="submit" className="w-12 font-bold bg-slate-50 hover:bg-slate-100">post</Button>
                 </div>
             </form >
         </div>

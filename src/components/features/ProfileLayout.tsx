@@ -6,36 +6,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchUserId, followAction } from "../../../lib/actions";
 import Button from "../elements/Button";
-
-interface ProfileData {
-    id: string;
-    image: string | null;
-    createdAt: Date;
-    update: Date;
-    username: string;
-    bio: string | null;
-    likes: {
-        userId: string;
-    }[];
-    followers: { 
-        followingId: string;
-    }[]; 
-    following: {
-        followerId: string;
-    }[];
-    posts: {
-        id: string;
-        title: string;
-        createdAt: Date;
-        likes: {
-            userId: string;
-        }[];
-    }[];
-};
-
-interface ProfileLayoutProps {
-    data: ProfileData[]
-}
+import { ProfileLayoutProps } from "@/interface/interface";
+import StatItem from "./StatItem";
 
 export default function ProfileLayout({ data }: ProfileLayoutProps) {
     const [userId, setUserId] = useState<string | null>(null)
@@ -53,6 +25,10 @@ export default function ProfileLayout({ data }: ProfileLayoutProps) {
     const followersUserDataArray = uniqueData.following.map(user => user.followerId);
     const followingUserDataArray = uniqueData.followers.map(user => user.followingId);
 
+    const followingCount = followingUserDataArray.flat(Infinity).length 
+    const followersCount = followersUserDataArray.flat(Infinity).length 
+    const likesCount = likedUserDataArray.flat(Infinity).length 
+
     if (!uniqueData.image) {
         throw new Error("image not found");
     }
@@ -69,23 +45,16 @@ export default function ProfileLayout({ data }: ProfileLayoutProps) {
                     {uniqueData.username}
                     {userId && uniqueData.id !== userId && (
                         <form action={handleFollowAction}>
-                            {uniqueData.following.some(user => user.followerId === userId) ? <Button className="bg-slate-50 font-normal text-sm p-1 w-20">following</Button> : <Button className="bg-gray-700 text-white hover:bg-gray-600 font-normal text-sm p-1 w-20">follow</Button>}
+                            <Button className={`font-normal text-sm p-1 w-20 ${uniqueData.following.some(user => user.followerId === userId) ? "bg-slate-50 hover:bg-slate-100" : "bg-gray-700 text-white hover:bg-gray-600"}`}>
+                                {uniqueData.following.some(user => user.followerId === userId) ? "following" : "follow"}
+                            </Button>
                         </form>
                     )}
                 </div>
                 <div className="flex justify-center items-center text-sm text-black pb-3 border-b">
-                    <div className="w-24 border-r flex flex-col gap-2 justify-center items-center">
-                        {followingUserDataArray.flat(Infinity).length}
-                        <span className="text-gray-400">Following</span>
-                    </div>
-                    <div className="w-24 border-r flex flex-col gap-2 justify-center items-center">
-                        {followersUserDataArray.flat(Infinity).length}
-                        <span className="text-gray-400">Followers</span>
-                    </div>
-                    <div className="w-24 flex flex-col gap-2 justify-center items-center">
-                        {likedUserDataArray.flat(Infinity).length}
-                        <span className="text-gray-400">Likes</span>
-                    </div>
+                    <StatItem count={followingCount} label="Following" />
+                    <StatItem count={followersCount} label="Followers" />
+                    <StatItem count={likesCount} label="Likes" />
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-50 p-4">
                     {uniqueData.posts.map((post) => {
@@ -97,7 +66,7 @@ export default function ProfileLayout({ data }: ProfileLayoutProps) {
                                     </span>
                                 </Link>
                                 <div className="h-[25%] flex justify-end items-center gap-2 pr-1 text-sm">
-                                    {post.likes.map(like => like.userId).some(user => user == userId) ? <HeartIcon className="h-4 w-4 pt-[2px] text-red-500" /> : <HeartIcon className="h-4 w-4 pt-[2px]" />}
+                                    <HeartIcon className={`h-4 w-4 pt-[2px] ${post.likes.map(like => like.userId).some(user => user == userId) ? "text-red-500" : ""}`} />
                                     {post.likes.map(like => like.userId).length}
                                 </div>
                             </div>
