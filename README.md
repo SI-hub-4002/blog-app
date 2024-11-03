@@ -15,7 +15,7 @@ url<br>
 - Typescript
 - React
 - Next.js
-- Prisma
+- Prismat 
 - Supabase
 - Clerk
 

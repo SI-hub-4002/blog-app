@@ -29,12 +29,12 @@ export default async function Profile({params}: { params: Params}) {
             },
             followers: {
                 select: {
-                    followerId: true,
+                    followingId: true,
                 }
             },
             following: {
                 select: {
-                    followingId: true,
+                    followerId: true,
                 }
             },
             likes: {
