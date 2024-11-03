@@ -111,7 +111,7 @@ export default function BlogPageLayout({ postsProps, usersProps }: BlogPageLayou
                         <Button className="bg-white hover:bg-slate-100 h-10 w-10 sm:h-12 sm:w-12 rounded-xl flex items-center justify-center">
                             <HeartIcon className={`h-6 w-6 sm:h-8 sm:w-8 ${likedUserArray.some(user => user == userId) ? "text-red-500" : ""}`} />
                         </Button>
-                    </form> 
+                    </form>
                     :
                     <div className="pt-3 sm:pt-2">
                         <Link href="/sign-up" className="bg-white h-10 w-10 sm:h-12 sm:w-12 rounded-xl flex items-center justify-center hover:bg-slate-100">
@@ -181,13 +181,17 @@ export default function BlogPageLayout({ postsProps, usersProps }: BlogPageLayou
                         />
                         {uniquePostData.author.username}
                     </Link>
-                    {userId && uniquePostData.author.id !== userId && (
+                    {userId ?
                         <form action={followAction}>
                             <Button className={`font-normal text-sm p-1 w-20 ${uniqueUserData.following.some(user => user.followerId === userId) ? "bg-slate-50 hover:bg-slate-100" : "bg-gray-700 text-white hover:bg-gray-600"}`}>
                                 {uniqueUserData.following.some(user => user.followerId === userId) ? "following" : "follow"}
                             </Button>
                         </form>
-                    )}
+                        :
+                        <Link href="/sign-up" className="font-normal text-sm p-1 w-20 bg-gray-700 text-white hover:bg-gray-600 rounded-xl flex justify-center items-center">
+                            follow
+                        </Link>
+                    }
                 </div>
             </div>
         </div>
