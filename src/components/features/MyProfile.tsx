@@ -22,6 +22,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
 
     const uniqueData = data[0]
     const likedUserDataArray = uniqueData.posts.map(post => post.likes.map(user => user.userId));
+    const postIdArray = uniqueData.posts.map(post => post.id);
     const followersUserDataArray = uniqueData.following.map(user => user.followerId);
     const followingUserDataArray = uniqueData.followers.map(user => user.followingId);
 
@@ -60,7 +61,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                         <span className="text-gray-400">Likes</span>
                     </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-50 p-4">
+                <div className={`grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 ${postIdArray.length === 0 ? "bg-white" : "bg-slate-50"}`}>
                     {uniqueData.posts.map((post) => {
                         return (
                             <div key={`${post.id}`} className="relative bg-white aspect-square w-28 sm:w-32 rounded-xl flex flex-col pl-4 pt-4 pr-4">
