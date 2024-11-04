@@ -77,12 +77,12 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                                     </Button>
                                 </form>
                                 <Link href={`/blogpages/${post.id}`} className="h-[75%] border-b border-gray-700 text-xs sm:text-base flex justify-center items-center">
-                                <span className="overflow-hidden break-words text-center">
+                                    <span className="overflow-hidden break-words text-center">
                                         {post.title}
                                     </span>
                                 </Link>
                                 <div className="h-[25%] flex justify-end items-center gap-2 pr-1 text-sm">
-                                    <HeartIcon className={`h-4 w-4 pt-[2px] ${post.likes.map(like => like.userId).some(user => user == userId) ? "text-red-500" : ""}`}/>
+                                    <HeartIcon className={`h-4 w-4 pt-[2px] ${post.likes.map(like => like.userId).some(user => user == userId) ? "text-red-500" : ""}`} />
                                     {post.likes.map(like => like.userId).length}
                                 </div>
                             </div>

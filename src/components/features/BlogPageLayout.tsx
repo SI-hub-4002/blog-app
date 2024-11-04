@@ -13,6 +13,10 @@ export default function BlogPageLayout({ postsProps, usersProps }: BlogPageLayou
     const uniquePostData = postsProps[0];
     const uniqueUserData = usersProps[0];
 
+    if(!uniquePostData || !uniqueUserData) {
+        return <span className="flex h-[calc(100vh-80px)] justify-center items-center">Blogpage not found</span>
+    }
+
     if (!uniquePostData.author.image) {
         throw new Error("image not found");
     }
@@ -119,7 +123,7 @@ export default function BlogPageLayout({ postsProps, usersProps }: BlogPageLayou
                         </Link>
                     </div>
                 }
-                <div className="bg-white h-auto p-4 flex flex-col">
+                <div className="bg-white w-full h-auto p-4 flex flex-col">
                     <div className="relative h-12 flex items-center border-b pb-4 pl-2">
                         <div className="text-xl sm:text-2xl text-left overflow-hidden break-words">
                             {uniquePostData.title}
@@ -181,16 +185,12 @@ export default function BlogPageLayout({ postsProps, usersProps }: BlogPageLayou
                         />
                         {uniquePostData.author.username}
                     </Link>
-                    {userId ?
+                    {userId && userId !== uniquePostData.authorId &&
                         <form action={followAction}>
                             <Button className={`font-normal text-sm p-1 w-20 ${uniqueUserData.following.some(user => user.followerId === userId) ? "bg-slate-50 hover:bg-slate-100" : "bg-gray-700 text-white hover:bg-gray-600"}`}>
                                 {uniqueUserData.following.some(user => user.followerId === userId) ? "following" : "follow"}
                             </Button>
                         </form>
-                        :
-                        <Link href="/sign-up" className="font-normal text-sm p-1 w-20 bg-gray-700 text-white hover:bg-gray-600 rounded-xl flex justify-center items-center">
-                            follow
-                        </Link>
                     }
                 </div>
             </div>
