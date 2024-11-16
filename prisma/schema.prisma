@@ -10,20 +10,26 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("POSTGRES_PRISMA_URL")
+  directUrl= env("POSTGRES_URL_NON_POOLING")
 }
 
 model User {
-  id          String    @id @default(uuid())
-  username    String    @unique
+  id          String    @id @default(cuid())
+  name    String?    @unique
+  email       String?   @unique
+  emailVerified DateTime? @map("email_verified")
   bio         String?
   image       String?
   createdAt   DateTime  @default(now())
   update      DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
   posts       Post[]    
   followers   Follower[] @relation("UserFollowers")
   following   Follower[] @relation("UserFollowing")
   likes       Like[]    
+  @@map("users")
 }
 model Post {
   id        String   @id @default(uuid())
@@ -33,7 +39,7 @@ model Post {
   authorId  String
   createdAt DateTime @default(now())
   update    DateTime  @updatedAt
-  likes     Like[]   
+  likes     Like[] 
 }
 model Like {
   id        String   @id @default(uuid())
@@ -50,4 +56,40 @@ model Follower {
   following  User     @relation("UserFollowing", fields: [followingId], references: [id])
   followingId String
   createdAt  DateTime @default(now())
+}
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String  @map("user_id")
+  type               String
+  provider           String
+  providerAccountId  String  @map("provider_account_id")
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@map("sessions")
+}
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }

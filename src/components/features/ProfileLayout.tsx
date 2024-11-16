@@ -15,7 +15,7 @@ export default function ProfileLayout({ data }: ProfileLayoutProps) {
     useEffect(() => {
         const fetchData = async () => {
             const userId = await fetchUserId();
-            setUserId(userId)
+            setUserId(userId ?? null)
         };
         fetchData();
     }, [])

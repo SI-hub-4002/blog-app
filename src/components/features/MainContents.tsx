@@ -16,7 +16,7 @@ export default function MainContent() {
     useEffect(() => {
         const fetchData = async () => {
             const userId = await fetchUserId();
-            setUserId(userId)
+            setUserId(userId ?? null)
         };
         fetchData();
     }, [])
@@ -64,7 +64,7 @@ export default function MainContent() {
                                     <Link href={`/${post.author.id === userId ? "myprofile" : "profile"}/${post.author.id}`} className="flex items-center gap-2 overflow-hidden">
                                         <Image width={25} height={25} className="rounded-full" src={post.author.image ? post.author.image : ""} alt="User's profile picture" />
                                         <span className="whitespace-nowrap">
-                                            {post.author.username}
+                                            {post.author.name}
                                         </span>
                                     </Link>
                                     <div className="flex items-center justify-center gap-[3px]">

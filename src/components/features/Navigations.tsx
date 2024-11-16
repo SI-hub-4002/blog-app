@@ -13,14 +13,14 @@ export default function Navigation() {
     useEffect(() => {
         const fetchData = async () => {
             const userId = await fetchUserId();
-            setUserId(userId)
+            setUserId(userId ?? null)
         };
         fetchData();
     }, [isOpen])
 
     const navList = [
         { icon: HomeIcon, lavel: "Home", href: "/" },
-        { icon: ProfileIcon, lavel: "Profile", href: userId ? `/myprofile/${userId}` : "/sign-up" },
+        { icon: ProfileIcon, lavel: "Profile", href: userId ? `/myprofile/${userId}` : "/signup" },
         { icon: PostIcon, lavel: "Post", href: userId ? "/post" : "/sign-up" },
     ]
 

@@ -7,14 +7,18 @@ import Button from "@/components/elements/Button";
 import { deleteAction, fetchUserId } from "../../../lib/actions";
 import { useEffect, useState } from "react";
 import { ProfileLayoutProps } from "@/interface/interface";
+import { signOut } from "next-auth/react";
 
 export default function MyProfileLayout({ data }: ProfileLayoutProps) {
-    const [userId, setUserId] = useState<string | null>(null);
+    const [userId, setUserId] = useState<string>("");
     const [likeErr, setLikeErr] = useState<string>("");
 
     useEffect(() => {
         const fetchData = async () => {
             const userId = await fetchUserId();
+            if(!userId) {
+                return;
+            }
             setUserId(userId)
         };
         fetchData();
@@ -44,7 +48,8 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
             <div className="h-aute bg-white flex flex-col justify-center items-center p-3 text-2xl gap-4">
                 <div className="pt-3 flex flex-col items-center justify-center gap-2">
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
-                    {uniqueData.username}
+                    {uniqueData.name}
+                    <Button className="bg-gray-700 hover:bg-gray-600 text-white text-base p-1" onClick={() => signOut({ callbackUrl: "/" })}>Logout</Button>
                     {likeErr ? <span className="text-sm xs:text-lg text-center text-red-500">{likeErr}</span> : <></>}
                 </div>
                 <div className="flex justify-center items-center text-sm text-black pb-3 border-b">

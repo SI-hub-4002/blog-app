@@ -1,35 +1,11 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import prisma from "./prisma";
 import { revalidatePath } from "next/cache";
-
-interface ProfileData {
-  id: string;
-  image: string | null;
-  createdAt: Date;
-  update: Date;
-  username: string;
-  bio: string | null;
-  likes: {
-      userId: string;
-  }[];
-  followers: {
-      followingId: string;
-  }[];
-  following: {
-      followerId: string;
-  }[];
-  posts: {
-      id: string;
-      title: string;
-      createdAt: Date;
-      likes: {
-          userId: string;
-      }[];
-  }[];
-};
+import { FollowDataArray, ProfileData } from "@/interface/interface";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 
 export async function postAction(formData: FormData) {
   try {
@@ -47,8 +23,10 @@ export async function postAction(formData: FormData) {
       .max(2000, "please enter a text within the 2000 word limit");
     const validatedPostContent = postContentSchema.parse(postContent);
 
-    const { userId } = auth();
-    if (!userId) {
+    const session = await getServerSession(authOptions);
+    const user = session?.user;
+
+    if (!user?.id) {
       throw new Error("user not authenticated");
     }
 
@@ -56,7 +34,7 @@ export async function postAction(formData: FormData) {
       data: {
         title: validatedPostTitle,
         content: validatedPostContent,
-        authorId: userId,
+        authorId: user.id,
       },
     });
 
@@ -85,7 +63,8 @@ export async function postAction(formData: FormData) {
 }
 
 export async function fetchUserId() {
-  const {userId} = auth();
+  const session = await getServerSession(authOptions);
+  const userId = session?.user.id;
   return userId;
 }
 
@@ -108,14 +87,15 @@ export async function AllContents() {
 }
 
 export async function LikesContents() {
-  const { userId } = auth();
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
 
   let posts = [];
   posts = await prisma.post.findMany({
     where: {
       likes: {
         some: {
-          AND: [...(userId ? [{ userId }] : [])],
+          userId: user?.id,
         },
       },
     },
@@ -135,18 +115,16 @@ export async function LikesContents() {
 }
 
 export async function FollowingContents() {
-  const {userId} = auth();
-  if(!userId) {
-    return;
-  }
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
 
-  const users = await prisma.user.findMany({
+  const users: FollowDataArray = await prisma.user.findMany({
     where: {
       following: {
         some: {
-          followerId: userId,
-        }
-      }
+          followerId: user?.id,
+        },
+      },
     },
     include: {
       posts: {
@@ -158,37 +136,36 @@ export async function FollowingContents() {
           likes: {
             select: {
               userId: true,
-            }
-          }
-        }
+            },
+          },
+        },
       },
     },
     orderBy: {
       createdAt: "desc",
     },
   });
-  console.log(users)
 
-  const posts = users.flatMap(user => {
-    return (user.posts.map(post => {
-      return ({
-      id: post.id,
-      createdAt: post.createdAt,
-      title: post.title,
-      authorId: post.authorId,
-      author: {
-        id: user.id,
-        createdAt: user.createdAt,
-        image: user.image,
-        update: user.update,
-        username: user.username,
-        bio: user.bio
-      },
-      likes: post.likes.map(like => ({
-        userId: like.userId
-      })),
-    })}))
-  })
+  const posts = users.flatMap((user) => {
+    return user.posts.map((post) => {
+      return {
+        id: post.id,
+        createdAt: post.createdAt,
+        title: post.title,
+        authorId: post.authorId,
+        author: {
+          id: user.id,
+          createdAt: user.createdAt,
+          image: user.image,
+          update: user.update,
+          name: user.name,
+        },
+        likes: post.likes.map((like) => ({
+          userId: like.userId,
+        })),
+      };
+    });
+  });
   return posts;
 }
 
@@ -203,39 +180,40 @@ export async function deleteAction(postId: string) {
 }
 
 export async function followAction(uniqueData: ProfileData) {
-  const {userId} = auth();
-  try {
-      const existingFollowerField = await prisma.follower.findFirst({
-          where: {
-              AND: [
-                  { followingId: uniqueData.id },
-                  ...(userId ? [{ followerId: userId }] : []),
-              ]
-          },
-      });
-      console.log("called")
-      if (existingFollowerField) {
-          await prisma.follower.delete({
-              where: {
-                  id: existingFollowerField.id,
-              }
-          })
-          revalidatePath(`/profile/${uniqueData.id}`);
-      } else {
-          if (userId) {
-              await prisma.follower.create({
-                  data: {
-                      followerId: userId,
-                      followingId: uniqueData.id,
-                  }
-              });
-              revalidatePath(`/profile/${uniqueData.id}`);
-          } else {
-              console.log("user is not authenticated")
-          }
-      }
-  } catch (err) {
-      console.log(err);
-  }
-};
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
 
+  try {
+    const existingFollowerField = await prisma.follower.findFirst({
+      where: {
+        AND: [
+          { followingId: uniqueData.id },
+          ...(user?.id ? [{ followerId: user.id }] : []),
+        ],
+      },
+    });
+    console.log("called");
+    if (existingFollowerField) {
+      await prisma.follower.delete({
+        where: {
+          id: existingFollowerField.id,
+        },
+      });
+      revalidatePath(`/profile/${uniqueData.id}`);
+    } else {
+      if (user?.id) {
+        await prisma.follower.create({
+          data: {
+            followerId: user?.id,
+            followingId: uniqueData.id,
+          },
+        });
+        revalidatePath(`/profile/${uniqueData.id}`);
+      } else {
+        console.log("user is not authenticated");
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}

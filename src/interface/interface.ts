@@ -10,8 +10,8 @@ export interface PostsProps {
         createdAt: Date;
         update: Date;
         image: string | null;
-        username: string;
-        bio: string | null;
+        name: string | null;
+        bio?: string | null;
     };
     likes: {
         userId: string;
@@ -25,8 +25,8 @@ export interface UsersProps {
     createdAt: Date;
     image: string | null;
     update: Date;
-    username: string;
-    bio: string | null;
+    name: string | null;
+    bio?: string | null;
     following: {
         followerId: string;
     }[];
@@ -42,8 +42,8 @@ export interface ProfileData {
     image: string | null;
     createdAt: Date;
     update: Date;
-    username: string;
-    bio: string | null;
+    name: string | null;
+    bio?: string | null;
     likes: {
         userId: string;
     }[];
@@ -62,6 +62,26 @@ export interface ProfileData {
         }[];
     }[];
 };
+
+export interface FollowData {
+    id: string;
+    image: string | null;
+    createdAt: Date;
+    update: Date;
+    name: string | null;
+    bio?: string | null;
+    posts: {
+        id: string;
+        title: string;
+        authorId: string;
+        createdAt: Date;
+        likes: {
+            userId: string;
+        }[];
+    }[];
+};
+
+export type FollowDataArray = FollowData[];
 
 export interface ProfileLayoutProps {
     data: ProfileData[]

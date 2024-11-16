@@ -1,6 +1,6 @@
 import Header from "@/components/features/Header";
 import Navigation from "@/components/features/Navigations";
-import { ClerkProvider } from "@clerk/nextjs";
+import { SessionProviders } from "../../lib/provider";
 
 export default function RootLayout({
   children,
@@ -8,14 +8,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="jp">
-        <body className="relative h-screen bg-slate-50">
+    <html lang="jp">
+      <body className="relative h-screen bg-slate-50">
+        <SessionProviders>
           <Navigation />
           <Header />
           {children}
-        </body>
-      </html>
-    </ClerkProvider>
+        </SessionProviders>
+      </body>
+    </html>
   );
 }
