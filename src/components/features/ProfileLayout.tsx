@@ -42,7 +42,7 @@ export default function ProfileLayout({ data }: ProfileLayoutProps) {
             <div className="h-aute bg-white flex flex-col justify-center items-center p-3 text-2xl gap-4">
                 <div className="pt-3 flex flex-col items-center justify-center gap-2">
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
-                    {uniqueData.username}
+                    {uniqueData.name}
                     {userId ?
                         <form action={handleFollowAction}>
                             <Button className={`font-normal text-sm p-1 w-20 ${uniqueData.following.some(user => user.followerId === userId) ? "bg-slate-50 hover:bg-slate-100" : "bg-gray-700 text-white hover:bg-gray-600"}`}>
