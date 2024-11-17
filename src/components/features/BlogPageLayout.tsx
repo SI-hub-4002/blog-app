@@ -99,7 +99,7 @@ export default async function BlogPageLayout({ postsProps, usersProps }: BlogPag
         <div className="flex text-gray-700 h-[calc(100vh-80px)]">
             <div className="flex gap-4 sm:gap-6 p-4 sm:p-6 w-full lg:w-[75%]">
                 {user ?
-                    <form action={likeAction} className="pt-3 sm:pt-2">
+                    <form onSubmit={likeAction} className="pt-3 sm:pt-2">
                         <Button className="bg-white hover:bg-slate-100 h-10 w-10 sm:h-12 sm:w-12 rounded-xl flex items-center justify-center">
                             <HeartIcon className={`h-6 w-6 sm:h-8 sm:w-8 ${likedUserArray?.some(likeUserId => likeUserId === user.id) ? "text-red-500" : ""}`} />
                         </Button>
@@ -176,7 +176,7 @@ export default async function BlogPageLayout({ postsProps, usersProps }: BlogPag
                         {uniquePostData.author.name}
                     </Link>
                     {user?.id && user.id !== uniquePostData.authorId &&
-                        <form action={followAction}>
+                        <form onSubmit={followAction}>
                             <Button className={`font-normal text-sm p-1 w-20 ${uniqueUserData.following.some(uniqueUser => uniqueUser.followerId === user?.id) ? "bg-slate-50 hover:bg-slate-100" : "bg-gray-700 text-white hover:bg-gray-600"}`}>
                                 {uniqueUserData.following.some(uniqueUser => uniqueUser.followerId === user?.id) ? "following" : "follow"}
                             </Button>
