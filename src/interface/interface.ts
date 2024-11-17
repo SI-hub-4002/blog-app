@@ -18,7 +18,7 @@ export interface PostsProps {
     }[];
 };
 
-export type PostsUniquePropsArray = PostsProps[];
+export type PostsPropsArray = PostsProps[];
 
 export interface UsersProps {
     id: string;
