@@ -4,7 +4,7 @@ import { HeartIcon } from "@/components/elements/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { fetchUserId, followAction } from "../../../lib/actions";
+import { fetchUserId, ProfileFollowAction } from "../../../lib/actions";
 import Button from "../elements/Button";
 import { ProfileLayoutProps } from "@/interface/interface";
 import StatItem from "./StatItem";
@@ -34,7 +34,7 @@ export default function ProfileLayout({ data }: ProfileLayoutProps) {
     }
 
     const handleFollowAction = () => {
-        followAction(uniqueData);
+        ProfileFollowAction(uniqueData);
     }
 
     return (

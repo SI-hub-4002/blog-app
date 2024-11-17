@@ -3,7 +3,11 @@
 import { z } from "zod";
 import prisma from "./prisma";
 import { revalidatePath } from "next/cache";
-import { FollowDataArray, ProfileData } from "@/interface/interface";
+import {
+  FollowDataArray,
+  PostsProps,
+  ProfileData,
+} from "@/interface/interface";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 
@@ -179,7 +183,7 @@ export async function deleteAction(postId: string) {
   revalidatePath(`/myprofile/${userId}`);
 }
 
-export async function followAction(uniqueData: ProfileData) {
+export async function ProfileFollowAction(uniqueData: ProfileData) {
   const session = await getServerSession(authOptions);
   const user = session?.user;
 
@@ -209,6 +213,88 @@ export async function followAction(uniqueData: ProfileData) {
           },
         });
         revalidatePath(`/profile/${uniqueData.id}`);
+      } else {
+        console.log("user is not authenticated");
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function likeAction(
+  uniquePostData: PostsProps,
+  userId: string | null,
+) {
+  try {
+    if (!userId) {
+      return;
+    };
+
+    const existingLikeField = await prisma.like.findFirst({
+      where: {
+        postId: uniquePostData.id,
+        userId: userId,
+      },
+    });
+
+    if (existingLikeField) {
+      await prisma.like.delete({
+        where: {
+          id: existingLikeField.id,
+        },
+      });
+      revalidatePath(`/blogpages/${uniquePostData.id}`);
+    } else {
+      if (userId) {
+        await prisma.like.create({
+          data: {
+            userId: userId,
+            postId: uniquePostData.id,
+          },
+        });
+        revalidatePath(`/blogpages/${uniquePostData.id}`);
+      } else {
+        console.log("user is not authenticated");
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function blogPageFollowAction(
+  uniquePostData: PostsProps,
+  userId: string | null,
+) {
+  try {
+    if (!userId) {
+      return;
+    };
+
+    const existingFollowerField = await prisma.follower.findFirst({
+      where: {
+        followingId: uniquePostData.authorId,
+        followerId: userId,
+      },
+    });
+
+    if (existingFollowerField) {
+      await prisma.follower.delete({
+        where: {
+          id: existingFollowerField.id,
+        },
+      });
+      revalidatePath(`/blogpages/${uniquePostData.id}`);
+    } else {
+      if (userId) {
+        await prisma.follower.create({
+          data: {
+            followerId: userId,
+            followingId: uniquePostData.authorId,
+          },
+        });
+        revalidatePath(`/blogpages/${uniquePostData.id}`);
       } else {
         console.log("user is not authenticated");
       }

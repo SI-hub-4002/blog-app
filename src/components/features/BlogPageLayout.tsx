@@ -1,16 +1,23 @@
+"use client"
+
 import Button from "@/components/elements/Button";
 import { HeartIcon } from "@/components/elements/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import { BlogPageLayoutProps } from "@/interface/interface";
-import prisma from "../../../lib/prisma";
-import { revalidatePath } from "next/cache";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
+import { blogPageFollowAction, fetchUserId, likeAction } from "../../../lib/actions";
+import { useEffect, useState } from "react";
 
-export default async function BlogPageLayout({ postsProps, usersProps }: BlogPageLayoutProps) {
-    const session = await getServerSession(authOptions);
-    const user = session?.user || null;
+export default function BlogPageLayout({ postsProps, usersProps }: BlogPageLayoutProps) {
+    const [userId, setUserId] = useState<string | null>(null)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const userId = await fetchUserId();
+            setUserId(userId ?? null)
+        };
+        fetchData();
+    }, [])
 
     const uniquePostData = postsProps?.[0];
     const uniqueUserData = usersProps?.[0];
@@ -25,83 +32,21 @@ export default async function BlogPageLayout({ postsProps, usersProps }: BlogPag
 
     const likedUserArray = uniquePostData.likes.map(like => like.userId)
 
-    const likeAction = async () => {
-
-        try {
-            const existingLikeField = await prisma.like.findFirst({
-                where: {
-                    postId: uniquePostData.id,
-                    userId: user?.id,
-                },
-            });
-
-            if (existingLikeField) {
-                await prisma.like.delete({
-                    where: {
-                        id: existingLikeField.id,
-                    }
-                })
-                revalidatePath(`/blogpages/${uniquePostData.id}`);
-            } else {
-                if (user?.id) {
-                    await prisma.like.create({
-                        data: {
-                            userId: user.id,
-                            postId: uniquePostData.id,
-                        }
-                    });
-                    revalidatePath(`/blogpages/${uniquePostData.id}`);
-                } else {
-                    console.log("user is not authenticated")
-                }
-            }
-        } catch (err) {
-            console.log(err);
-        }
+    const handleLikeAction = () => {
+        likeAction(uniquePostData, userId);
     }
 
-    const followAction = async () => {
-
-        try {
-            const existingFollowerField = await prisma.follower.findFirst({
-                where: {
-                    followingId: uniquePostData.authorId,
-                    followerId: user?.id,
-                },
-            });
-
-            if (existingFollowerField) {
-                await prisma.follower.delete({
-                    where: {
-                        id: existingFollowerField.id,
-                    }
-                })
-                revalidatePath(`/blogpages/${uniquePostData.id}`);
-            } else {
-                if (user?.id) {
-                    await prisma.follower.create({
-                        data: {
-                            followerId: user.id,
-                            followingId: uniquePostData.authorId,
-                        }
-                    });
-                    revalidatePath(`/blogpages/${uniquePostData.id}`);
-                } else {
-                    console.log("user is not authenticated")
-                }
-            }
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    const handleBlogPageFollowAction = () => {
+        blogPageFollowAction(uniquePostData, userId);
+    }
 
     return (
         <div className="flex text-gray-700 h-[calc(100vh-80px)]">
             <div className="flex gap-4 sm:gap-6 p-4 sm:p-6 w-full lg:w-[75%]">
-                {user ?
-                    <form onSubmit={likeAction} className="pt-3 sm:pt-2">
+                {userId ?
+                    <form action={handleLikeAction} className="pt-3 sm:pt-2">
                         <Button className="bg-white hover:bg-slate-100 h-10 w-10 sm:h-12 sm:w-12 rounded-xl flex items-center justify-center">
-                            <HeartIcon className={`h-6 w-6 sm:h-8 sm:w-8 ${likedUserArray?.some(likeUserId => likeUserId === user.id) ? "text-red-500" : ""}`} />
+                            <HeartIcon className={`h-6 w-6 sm:h-8 sm:w-8 ${likedUserArray?.some(likeUserId => likeUserId === userId) ? "text-red-500" : ""}`} />
                         </Button>
                     </form>
                     :
@@ -119,7 +64,7 @@ export default async function BlogPageLayout({ postsProps, usersProps }: BlogPag
                         <div className="absolute right-0 bottom-0 pr-2 hidden md:block">
                             <Link
                                 className="flex items-center gap-2 lg:hidden overflow-hidden break-words hover:bg-slate-100 p-1 rounded-md"
-                                href={(uniquePostData.author.id !== user?.id ?
+                                href={(uniquePostData.author.id !== userId ?
                                     `/profile/${uniquePostData.author.id}`
                                     :
                                     `/myprofile/${uniquePostData.author.id}`)}
@@ -129,7 +74,7 @@ export default async function BlogPageLayout({ postsProps, usersProps }: BlogPag
                             </Link>
                             <div className="flex gap-4 items-center justify-between">
                                 <div className="flex items-center gap-1">
-                                    <HeartIcon className={`h-4 w-4 pt-[2px] ${likedUserArray?.some(likeUserId => likeUserId === user?.id) ? "text-red-500" : ""}`} />
+                                    <HeartIcon className={`h-4 w-4 pt-[2px] ${likedUserArray?.some(likeUserId => likeUserId === userId) ? "text-red-500" : ""}`} />
                                     {uniquePostData.likes.map(like => like.userId).length}
                                 </div>
                                 {uniquePostData.createdAt.toLocaleDateString()}
@@ -139,7 +84,7 @@ export default async function BlogPageLayout({ postsProps, usersProps }: BlogPag
                     <div className="flex items-center justify-start pt-1 gap-3 md:hidden text-sm">
                         <Link
                             className="flex items-center gap-2 lg:hidden overflow-hidden break-words hover:bg-slate-100 p-1 rounded-md"
-                            href={(uniquePostData.author.id !== user?.id ?
+                            href={(uniquePostData.author.id !== userId ?
                                 `/profile/${uniquePostData.author.id}`
                                 :
                                 `/myprofile/${uniquePostData.author.id}`)}
@@ -148,7 +93,7 @@ export default async function BlogPageLayout({ postsProps, usersProps }: BlogPag
                             {uniquePostData.author.name}
                         </Link>
                         <div className="flex items-center gap-[2px]">
-                            <HeartIcon className={`h-4 w-4 pt-[2px] ${likedUserArray.some(likeUserId => likeUserId === user?.id) ? "text-red-500" : ""}`} />
+                            <HeartIcon className={`h-4 w-4 pt-[2px] ${likedUserArray.some(likeUserId => likeUserId === userId) ? "text-red-500" : ""}`} />
                             {uniquePostData.likes.map(like => like.userId).length}
                         </div>
                         {uniquePostData.createdAt.toLocaleDateString()}
@@ -162,7 +107,7 @@ export default async function BlogPageLayout({ postsProps, usersProps }: BlogPag
                 <div className="flex items-center p-4 gap-2 font-bold text-xl bg-white">
                     <Link
                         className="flex items-center gap-4 overflow-hidden break-words hover:bg-slate-100 p-2 rounded-md"
-                        href={(uniquePostData.author.id !== user?.id
+                        href={(uniquePostData.author.id !== userId
                             ? `/profile/${uniquePostData.author.id}`
                             : `/myprofile/${uniquePostData.author.id}`)}
                     >
@@ -175,10 +120,10 @@ export default async function BlogPageLayout({ postsProps, usersProps }: BlogPag
                         />
                         {uniquePostData.author.name}
                     </Link>
-                    {user?.id && user.id !== uniquePostData.authorId &&
-                        <form onSubmit={followAction}>
-                            <Button className={`font-normal text-sm p-1 w-20 ${uniqueUserData.following.some(uniqueUser => uniqueUser.followerId === user?.id) ? "bg-slate-50 hover:bg-slate-100" : "bg-gray-700 text-white hover:bg-gray-600"}`}>
-                                {uniqueUserData.following.some(uniqueUser => uniqueUser.followerId === user?.id) ? "following" : "follow"}
+                    {userId && userId !== uniquePostData.authorId &&
+                        <form action={handleBlogPageFollowAction}>
+                            <Button className={`font-normal text-sm p-1 w-20 ${uniqueUserData.following.some(uniqueUser => uniqueUser.followerId === userId) ? "bg-slate-50 hover:bg-slate-100" : "bg-gray-700 text-white hover:bg-gray-600"}`}>
+                                {uniqueUserData.following.some(uniqueUser => uniqueUser.followerId === userId) ? "following" : "follow"}
                             </Button>
                         </form>
                     }
