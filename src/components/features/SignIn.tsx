@@ -1,7 +1,7 @@
 "use client"
 
 import Button from "@/components/elements/Button";
-import { getProviders, signIn } from "next-auth/react"
+import { getProviders, signIn, useSession } from "next-auth/react"
 import { useEffect, useState } from "react";
 import Input from "../elements/Input";
 import Link from "next/link";
@@ -9,6 +9,11 @@ import Link from "next/link";
 export default function SignIn() {
     const [providers, setProviders] = useState<object | null>(null);
     const [email, setEmail] = useState("");
+    const [isEmailSent, setIsEmailSent] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const { data: session } = useSession();
+    console.log(session)
 
     useEffect(() => {
         const fetchProviders = async () => {
@@ -17,10 +22,32 @@ export default function SignIn() {
         };
         fetchProviders();
     }, []);
-    console.log(providers)
-    const handleEmailSignIn = () => {
+
+    if (session) {
+        return (
+            <div className="text-center">
+                <p>You are already signed in. Redirecting...</p>
+                <Link href="/">Go to homepage</Link>
+            </div>
+        );
+    }
+
+    const handleEmailSignIn = async () => {
         if (email) {
-            signIn("email", { email, callbackUrl: "/" });
+            setError(null);
+            try {
+                const result = await signIn("email", { email, callbackUrl: "/" });
+
+                if (result?.error) {
+                    setError("Failed to send email. Please try again.");
+                } else {
+                    setIsEmailSent(true); 
+                }
+            } catch {
+                setError("An error occurred while signing in.");
+            }
+        } else {
+            setError("Please enter a valid email address.");
         }
     };
 
@@ -61,8 +88,14 @@ export default function SignIn() {
                         />
                     </div>
                     <Button className="p-1 text-sm text-white bg-gray-700 hover:bg-gray-600" onClick={handleEmailSignIn}>
-                        Continue
+                        {isEmailSent ? "Check your inbox" : "Continue"}
                     </Button>
+                    {isEmailSent && (
+                        <div className="text-sm text-gray-500 mt-3">
+                            Please check your inbox for the sign-in link.
+                        </div>
+                    )}
+                    {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
                 </div>
                 <div className="border-t">
                     <span className="text-gray-400 text-sm">
