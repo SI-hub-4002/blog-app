@@ -66,7 +66,7 @@ export default function SignIn() {
                 </div>
                 <div className="border-t">
                     <span className="text-gray-400 text-sm">
-                        Don’t have an account? {<Link href="/signup" className="text-gray-600 font-bold hover:text-gray-400">Sign up</Link>}
+                        Already have an account? {<Link href="/signup" className="text-gray-600 font-bold hover:text-gray-400">Sign up</Link>}
                     </span>
                 </div>
             </div>
