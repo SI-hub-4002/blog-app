@@ -12,8 +12,7 @@ export default function SignIn() {
     const [isEmailSent, setIsEmailSent] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { data: session } = useSession();
-    console.log(session)
+    const { data: session, status } = useSession();
 
     useEffect(() => {
         const fetchProviders = async () => {
@@ -22,6 +21,10 @@ export default function SignIn() {
         };
         fetchProviders();
     }, []);
+
+    if (status === "loading") {
+        return <div>Loading...</div>;  
+    }
 
     if (session) {
         return (
