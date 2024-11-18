@@ -5,12 +5,14 @@ import { getProviders, signIn, useSession } from "next-auth/react"
 import { useEffect, useState } from "react";
 import Input from "../elements/Input";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function SignIn() {
     const [providers, setProviders] = useState<object | null>(null);
     const [email, setEmail] = useState("");
     const [isEmailSent, setIsEmailSent] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
     const { data: session, status } = useSession();
 
@@ -22,17 +24,14 @@ export default function SignIn() {
         fetchProviders();
     }, []);
 
-    if (status === "loading") {
-        return <div>Loading...</div>;  
-    }
+    useEffect(() => {
+        if (session) {
+            router.push("/"); 
+        }
+    }, [session, router]);
 
-    if (session) {
-        return (
-            <div className="text-center">
-                <p>You are already signed in. Redirecting...</p>
-                <Link href="/">Go to homepage</Link>
-            </div>
-        );
+    if (status === "loading") {
+        return <div>Loading...</div>;
     }
 
     const handleEmailSignIn = async () => {
@@ -44,7 +43,7 @@ export default function SignIn() {
                 if (result?.error) {
                     setError("Failed to send email. Please try again.");
                 } else {
-                    setIsEmailSent(true); 
+                    setIsEmailSent(true);
                 }
             } catch {
                 setError("An error occurred while signing in.");
