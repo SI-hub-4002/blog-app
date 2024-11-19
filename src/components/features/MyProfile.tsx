@@ -8,11 +8,8 @@ import { fetchUserId, postDeleteAction, userDeleteAction } from "../../../lib/ac
 import { useEffect, useState } from "react";
 import { ProfileLayoutProps } from "@/interface/interface";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/router";
 
 export default function MyProfileLayout({ data }: ProfileLayoutProps) {
-    const router = useRouter();
-
     const [userId, setUserId] = useState<string>("");
     const [err, setErr] = useState<string>("");
 
@@ -50,7 +47,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
         setErr("");
         try {
             await userDeleteAction();
-            router.push('/');
+            window.location.href = '/';
         } catch {
             setErr("acount could not be deleted");
         }
