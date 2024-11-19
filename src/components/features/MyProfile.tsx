@@ -8,8 +8,11 @@ import { fetchUserId, postDeleteAction, userDeleteAction } from "../../../lib/ac
 import { useEffect, useState } from "react";
 import { ProfileLayoutProps } from "@/interface/interface";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function MyProfileLayout({ data }: ProfileLayoutProps) {
+    const router = useRouter();
+
     const [userId, setUserId] = useState<string>("");
     const [err, setErr] = useState<string>("");
 
@@ -38,7 +41,6 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
         setErr("");
         try {
             await postDeleteAction(postId);
-            setErr("");
         } catch {
             setErr("posts that have been liked cannot be deleted");
         }
@@ -48,7 +50,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
         setErr("");
         try {
             await userDeleteAction();
-            setErr("");
+            router.push('/');
         } catch {
             setErr("acount could not be deleted");
         }
@@ -61,13 +63,13 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
                     {uniqueData.name}
                     <div className="flex items-center jusitfy-center gap-2">
-                        <Button className="bg-gray-700 hover:bg-gray-600 text-white text-base p-1 w-14" onClick={() => signOut({ callbackUrl: "/" })}>Logout</Button>
+                        <Button className="bg-gray-700 hover:bg-gray-600 text-white text-base p-1 w-16" onClick={() => signOut({ callbackUrl: "/" })}>Logout</Button>
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
                                 handleUserDeleteAction();
                             }}
-                            className="w-14"
+                            className="w-16"
                         >
                             <Button className="bg-red-500 hover:bg-red-400 text-white text-base p-1">Delete</Button>
                         </form>
