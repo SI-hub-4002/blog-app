@@ -35,7 +35,7 @@ model Post {
   id        String   @id @default(uuid())
   title     String
   content   String
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
   createdAt DateTime @default(now())
   update    DateTime  @updatedAt
@@ -43,17 +43,17 @@ model Post {
 }
 model Like {
   id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
   createdAt DateTime @default(now())
 }
 model Follower {
   id         String   @id @default(uuid())
-  follower   User     @relation("UserFollowers", fields: [followerId], references: [id])
+  follower   User     @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
   followerId String
-  following  User     @relation("UserFollowing", fields: [followingId], references: [id])
+  following  User     @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
   followingId String
   createdAt  DateTime @default(now())
 }

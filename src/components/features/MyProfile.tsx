@@ -60,15 +60,18 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                 <div className="pt-3 flex flex-col items-center justify-center gap-2">
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
                     {uniqueData.name}
-                    <Button className="bg-gray-700 hover:bg-gray-600 text-white text-base p-1" onClick={() => signOut({ callbackUrl: "/" })}>Logout</Button>
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleUserDeleteAction();
-                        }}
-                    >
-                        <Button className="bg-red-500 hover:bg-red-400 text-white text-base p-1">Delete</Button>
-                    </form>
+                    <div className="flex items-center jusitfy-center gap-2">
+                        <Button className="bg-gray-700 hover:bg-gray-600 text-white text-base p-1 w-14" onClick={() => signOut({ callbackUrl: "/" })}>Logout</Button>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleUserDeleteAction();
+                            }}
+                            className="w-14"
+                        >
+                            <Button className="bg-red-500 hover:bg-red-400 text-white text-base p-1">Delete</Button>
+                        </form>
+                    </div>
                     {err ? <span className="text-sm xs:text-lg text-center text-red-500">{err}</span> : <></>}
                 </div>
                 <div className="flex justify-center items-center text-sm text-black pb-3 border-b">
