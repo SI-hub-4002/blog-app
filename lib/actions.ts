@@ -190,7 +190,7 @@ export async function userDeleteAction() {
       id: userId,
     },
   });
-  window.location.href = '/';
+  revalidatePath(`/myprofile/${userId}`);
 }
 
 export async function ProfileFollowAction(uniqueData: ProfileData) {
