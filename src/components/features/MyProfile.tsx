@@ -66,9 +66,8 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                                 e.preventDefault();
                                 handleUserDeleteAction();
                             }}
-                            className="w-16"
                         >
-                            <Button className="bg-red-500 hover:bg-red-400 text-white text-base p-1">Delete</Button>
+                            <Button className="bg-red-500 hover:bg-red-400 text-white text-base p-1 w-16">Delete</Button>
                         </form>
                     </div>
                     {err ? <span className="text-sm xs:text-lg text-center text-red-500">{err}</span> : <></>}
