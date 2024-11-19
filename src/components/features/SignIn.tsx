@@ -1,7 +1,7 @@
 "use client"
 
 import Button from "@/components/elements/Button";
-import { getProviders, signIn, useSession } from "next-auth/react"
+import { getProviders, signIn } from "next-auth/react"
 import { useEffect, useState } from "react";
 import Input from "../elements/Input";
 import Link from "next/link";
@@ -12,9 +12,6 @@ export default function SignIn() {
     const [isEmailSent, setIsEmailSent] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { data: session, status } = useSession();
-    console.log(session)
-
     useEffect(() => {
         const fetchProviders = async () => {
             const res = await getProviders();
@@ -22,19 +19,6 @@ export default function SignIn() {
         };
         fetchProviders();
     }, []);
-
-    if (status === "loading") {
-        return <div>Loading...</div>;  
-    }
-
-    if (session) {
-        return (
-            <div className="text-center">
-                <p>You are already signed in. Redirecting...</p>
-                <Link href="/">Go to homepage</Link>
-            </div>
-        );
-    }
 
     const handleEmailSignIn = async () => {
         if (email) {

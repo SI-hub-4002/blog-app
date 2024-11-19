@@ -4,19 +4,19 @@ import { HeartIcon, TrashIcon } from "@/components/elements/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/elements/Button";
-import { deleteAction, fetchUserId } from "../../../lib/actions";
+import { fetchUserId, postDeleteAction, userDeleteAction } from "../../../lib/actions";
 import { useEffect, useState } from "react";
 import { ProfileLayoutProps } from "@/interface/interface";
 import { signOut } from "next-auth/react";
 
 export default function MyProfileLayout({ data }: ProfileLayoutProps) {
     const [userId, setUserId] = useState<string>("");
-    const [likeErr, setLikeErr] = useState<string>("");
+    const [err, setErr] = useState<string>("");
 
     useEffect(() => {
         const fetchData = async () => {
             const userId = await fetchUserId();
-            if(!userId) {
+            if (!userId) {
                 return;
             }
             setUserId(userId)
@@ -34,12 +34,23 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
         throw new Error("image not found");
     };
 
-    const handleDeleteAction = async (postId: string) => {
+    const handlePostDeleteAction = async (postId: string) => {
+        setErr("");
         try {
-            await deleteAction(postId);
-            setLikeErr("");
+            await postDeleteAction(postId);
+            setErr("");
         } catch {
-            setLikeErr("posts that have been liked cannot be deleted");
+            setErr("posts that have been liked cannot be deleted");
+        }
+    };
+
+    const handleUserDeleteAction = async () => {
+        setErr("");
+        try {
+            await userDeleteAction();
+            setErr("");
+        } catch {
+            setErr("acount could not be deleted");
         }
     };
 
@@ -50,7 +61,15 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
                     {uniqueData.name}
                     <Button className="bg-gray-700 hover:bg-gray-600 text-white text-base p-1" onClick={() => signOut({ callbackUrl: "/" })}>Logout</Button>
-                    {likeErr ? <span className="text-sm xs:text-lg text-center text-red-500">{likeErr}</span> : <></>}
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleUserDeleteAction();
+                        }}
+                    >
+                        <Button className="bg-red-500 hover:bg-red-400 text-white text-base p-1">Delete</Button>
+                    </form>
+                    {err ? <span className="text-sm xs:text-lg text-center text-red-500">{err}</span> : <></>}
                 </div>
                 <div className="flex justify-center items-center text-sm text-black pb-3 border-b">
                     <div className="w-20 sm:w-24 border-r flex flex-col gap-2 justify-center items-center">
@@ -73,7 +92,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                                 <form
                                     onSubmit={(e) => {
                                         e.preventDefault();
-                                        handleDeleteAction(post.id);
+                                        handlePostDeleteAction(post.id);
                                     }}
                                     className="absolute top-2 right-2"
                                 >

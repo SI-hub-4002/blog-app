@@ -173,14 +173,24 @@ export async function FollowingContents() {
   return posts;
 }
 
-export async function deleteAction(postId: string) {
-  const userId = fetchUserId();
+export async function postDeleteAction(postId: string) {
+  const userId = await fetchUserId();
   await prisma.post.delete({
     where: {
       id: postId,
     },
   });
   revalidatePath(`/myprofile/${userId}`);
+}
+
+export async function userDeleteAction() {
+  const userId = await fetchUserId();
+  await prisma.user.delete({
+    where: {
+      id: userId,
+    },
+  });
+  revalidatePath("/");
 }
 
 export async function ProfileFollowAction(uniqueData: ProfileData) {
