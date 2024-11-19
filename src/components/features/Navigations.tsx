@@ -20,8 +20,8 @@ export default function Navigation() {
 
     const navList = [
         { icon: HomeIcon, lavel: "Home", href: "/" },
-        { icon: ProfileIcon, lavel: "Profile", href: userId ? `/myprofile/${userId}` : "/signup" },
-        { icon: PostIcon, lavel: "Post", href: userId ? "/post" : "/sign-up" },
+        { icon: ProfileIcon, lavel: "Profile", href: userId ? `/myprofile/${userId}` : "/signin" },
+        { icon: PostIcon, lavel: "Post", href: userId ? "/post" : "/signin" },
     ]
 
     const navBarsCss = "absolute block z-30 h-[2px] w-[26px] left-0 rounded-lg bg-gray-700 transition-all duration-200 ease-linear"

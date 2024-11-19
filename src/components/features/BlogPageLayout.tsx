@@ -51,7 +51,7 @@ export default function BlogPageLayout({ postsProps, usersProps }: BlogPageLayou
                     </form>
                     :
                     <div className="pt-3 sm:pt-2">
-                        <Link href="/sign-up" className="bg-white h-10 w-10 sm:h-12 sm:w-12 rounded-xl flex items-center justify-center hover:bg-slate-100">
+                        <Link href="/signin" className="bg-white h-10 w-10 sm:h-12 sm:w-12 rounded-xl flex items-center justify-center hover:bg-slate-100">
                             <HeartIcon className="h-6 w-6 sm:h-8 sm:w-8" />
                         </Link>
                     </div>
