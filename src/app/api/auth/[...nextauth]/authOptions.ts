@@ -22,27 +22,6 @@ export const authOptions: NextAuthOptions = {
         },
       };
     },
-    async signIn({ account }) {
-
-      if (!account || !account.provider || !account.providerAccountId) {
-        return false;
-      }
-      
-      const existingAccount = await prisma.account.findUnique({
-        where: {
-          provider_providerAccountId: {
-            provider: account.provider,        
-            providerAccountId: account.providerAccountId,  
-          },
-        },
-      });
-
-      if (!existingAccount) {
-        return false;  
-      }
-
-      return true;  
-    },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
