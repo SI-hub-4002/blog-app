@@ -24,7 +24,7 @@ export const authOptions: NextAuthOptions = {
     },
     async signIn({ account }) {
 
-      if(!account) {
+      if (!account || !account.provider || !account.providerAccountId) {
         return false;
       }
       
@@ -38,7 +38,6 @@ export const authOptions: NextAuthOptions = {
       });
 
       if (!existingAccount) {
-        console.log("Account not found, prompting re-authentication.");
         return false;  
       }
 
