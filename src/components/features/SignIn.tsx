@@ -25,7 +25,6 @@ export default function SignIn() {
                 </div>
                 {providers &&
                     Object.values(providers).map((provider) => {
-                        if (provider.id === 'github') {
                             return (
                                 <div key={provider.id} className="pb-2">
                                     <Button
@@ -36,8 +35,6 @@ export default function SignIn() {
                                     </Button>
                                 </div>
                             );
-                        }
-                        return null;
                     })
                 }
             </div>
