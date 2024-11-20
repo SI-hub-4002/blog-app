@@ -7,24 +7,11 @@ import Button from "@/components/elements/Button";
 import { useEffect, useState } from "react";
 import { AllContents, fetchUserId, FollowingContents, LikesContents } from "../../../lib/actions";
 import { PostsPropsArray } from "@/interface/interface";
-import prisma from "../../../lib/prisma";
-import { revalidatePath } from "next/cache";
 
 export default function MainContent() {
     const [btnState, setBtnState] = useState<string>("all");
     const [posts, setPosts] = useState<PostsPropsArray>([]);
     const [userId, setUserId] = useState<string | null>(null)
-
-    async function testDeleteAction() {
-        const userId = await fetchUserId();
-        await prisma.user.delete({
-            where: {
-                id: userId,
-            },
-        });
-        revalidatePath("/");
-    }
-    testDeleteAction();
 
     useEffect(() => {
         const fetchData = async () => {
