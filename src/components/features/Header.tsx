@@ -12,7 +12,7 @@ export default async function Header() {
                 <span className="text-3xl font-bold">N-Blog</span>
             </Link>
             <Link href={user?.id ? `/myprofile/${user?.id}` : "/signin"} className="absolute right-4 top-6">
-                <Image className="rounded-full" width={40} height={40} alt="/images/23296822.png" src={user?.image || "/images/23296822.png"}/>
+                <Image className="rounded-full" width={40} height={40} alt="profile_icon" src={user?.image || "/images/23296822.png"}/>
             </Link>
         </div>
     )
