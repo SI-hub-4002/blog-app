@@ -16,7 +16,7 @@ datasource db {
 
 model User {
   id          String    @id @default(cuid())
-  name    String?    @unique
+  name    String?    
   email       String?   @unique
   emailVerified DateTime? @map("email_verified")
   bio         String?
@@ -63,6 +63,7 @@ model Account {
   type               String
   provider           String
   providerAccountId  String  @map("provider_account_id")
+  oauth_token        String? @db.Text
   refresh_token      String? @db.Text
   access_token       String? @db.Text
   expires_at         Int?
