@@ -54,7 +54,7 @@ export default function MainContent() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {posts.map((post) => {
                         return (
-                            <div key={`${post.id}`} className="bg-white aspect-square rounded-xl flex flex-col pl-4 pt-4 pr-4">
+                            <div key={`${post.id}`} className="bg-white aspect-square rounded-xl flex flex-col pl-4 pt-4 pr-4 shadow-md">
                                 <Link href={`blogpages/${post.id}`} className="h-[75%] border-b border-gray-700 text-base sm:text-xl md:text-2xl flex justify-center items-center">
                                     <span className="overflow-hidden break-words">
                                         {post.title}
