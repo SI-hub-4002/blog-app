@@ -1,6 +1,6 @@
 "use client"
 
-import { HeartIcon, TrashIcon } from "@/components/elements/Icons";
+import { HeartIcon, PencilIcon, TrashIcon } from "@/components/elements/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/elements/Button";
@@ -8,10 +8,12 @@ import { fetchUserId, postDeleteAction, userDeleteAction } from "../../../lib/ac
 import { useEffect, useState } from "react";
 import { ProfileLayoutProps } from "@/interface/interface";
 import { signOut } from "next-auth/react";
+import Input from "../elements/Input";
 
 export default function MyProfileLayout({ data }: ProfileLayoutProps) {
     const [userId, setUserId] = useState<string>("");
     const [err, setErr] = useState<string>("");
+    const [isEditting, setIsEditting] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -58,7 +60,10 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
             <div className="h-aute bg-white flex flex-col justify-center items-center p-3 text-2xl gap-4">
                 <div className="pt-3 flex flex-col items-center justify-center gap-2">
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
-                    {uniqueData.name}
+                    <div className="flex jusify-center items-center gap-2">
+                        {isEditting ? <Input/> : uniqueData.name}
+                        {isEditting ? <Button>Update</Button> : <PencilIcon className="w-5 h-5 opacity-60" onClick={(isEdditing) => setIsEditting(!isEdditing)}/>}  
+                    </div>
                     <div className="flex items-center jusitfy-center gap-2">
                         <Button className="bg-gray-700 hover:bg-gray-600 text-white text-base p-1 w-16" onClick={() => signOut({ callbackUrl: "/" })}>Logout</Button>
                         <form
