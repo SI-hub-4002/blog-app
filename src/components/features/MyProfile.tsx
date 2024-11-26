@@ -62,7 +62,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
 
     const handleUpdateUsernameAction = async (formData: FormData) => {
         const result = await updateUsernameAction(userId, formData);
-        if (result.success) {
+        if (!result.success) {
             setErr(result.error);
         } else {
             setErr("");
