@@ -322,8 +322,8 @@ export async function updateUsernameAction(
     const username = formData.get("username") as string;
     const usernameSchema = z
       .string()
-      .min(1, "please enter a title")
-      .max(10, "please enter a title within the 10 word limit");
+      .min(1, "please enter a name")
+      .max(10, "please enter a name within the 10 word limit");
     const validatedUsername = usernameSchema.parse(username);
     
     await prisma.user.update({
