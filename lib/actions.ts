@@ -234,12 +234,12 @@ export async function ProfileFollowAction(uniqueData: ProfileData) {
 
 export async function likeAction(
   uniquePostData: PostsProps,
-  userId: string | null,
+  userId: string | null
 ) {
   try {
     if (!userId) {
       return;
-    };
+    }
 
     const existingLikeField = await prisma.like.findFirst({
       where: {
@@ -275,12 +275,12 @@ export async function likeAction(
 
 export async function blogPageFollowAction(
   uniquePostData: PostsProps,
-  userId: string | null,
+  userId: string | null
 ) {
   try {
     if (!userId) {
       return;
-    };
+    }
 
     const existingFollowerField = await prisma.follower.findFirst({
       where: {
@@ -311,5 +311,48 @@ export async function blogPageFollowAction(
     }
   } catch (err) {
     console.log(err);
+  }
+}
+
+export async function updateUsernameAction(
+  userId: string, 
+  formData: FormData,
+) {
+  try {
+    const username = formData.get("username") as string;
+    const usernameSchema = z
+      .string()
+      .min(1, "please enter a title")
+      .max(10, "please enter a title within the 10 word limit");
+    const validatedUsername = usernameSchema.parse(username);
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        name: validatedUsername,
+      },
+    });
+    return {
+      error: "",
+      success: true,
+    };
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return {
+        error: err.errors.map((e) => e.message).join(", "),
+        success: false,
+      };
+    } else if (err instanceof Error) {
+      return {
+        error: err.message,
+        success: false,
+      };
+    } else {
+      return {
+        error: "an unexpected error has occurred",
+        success: false,
+      };
+    }
   }
 }

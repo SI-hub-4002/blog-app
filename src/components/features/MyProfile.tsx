@@ -4,16 +4,23 @@ import { HeartIcon, PencilIcon, TrashIcon } from "@/components/elements/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/elements/Button";
-import { fetchUserId, postDeleteAction, userDeleteAction } from "../../../lib/actions";
+import { fetchUserId, postDeleteAction, updateUsernameAction, userDeleteAction } from "../../../lib/actions";
 import { useEffect, useState } from "react";
 import { ProfileLayoutProps } from "@/interface/interface";
 import { signOut } from "next-auth/react";
 import Input from "../elements/Input";
 
 export default function MyProfileLayout({ data }: ProfileLayoutProps) {
+    const uniqueData = data[0]
+    const likedUserDataArray = uniqueData.posts.map(post => post.likes.map(user => user.userId));
+    const postIdArray = uniqueData.posts.map(post => post.id);
+    const followersUserDataArray = uniqueData.following.map(user => user.followerId);
+    const followingUserDataArray = uniqueData.followers.map(user => user.followingId);
+
     const [userId, setUserId] = useState<string>("");
     const [err, setErr] = useState<string>("");
     const [isEditting, setIsEditting] = useState<boolean>(false);
+    const [username, setUsername] = useState<string | null>(uniqueData.name);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -25,12 +32,6 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
         };
         fetchData();
     }, [])
-
-    const uniqueData = data[0]
-    const likedUserDataArray = uniqueData.posts.map(post => post.likes.map(user => user.userId));
-    const postIdArray = uniqueData.posts.map(post => post.id);
-    const followersUserDataArray = uniqueData.following.map(user => user.followerId);
-    const followingUserDataArray = uniqueData.followers.map(user => user.followingId);
 
     if (!uniqueData.image) {
         throw new Error("image not found");
@@ -55,15 +56,29 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
         }
     };
 
+    const handleInputChenge = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUsername(e.target.value);
+    }
+
+    const handleUpdateUsernameAction = async (formData: FormData) => {
+        const result = await updateUsernameAction(userId, formData);
+        if (result.success) {
+            setErr(result.error);
+        } else {
+            setErr("");
+            window.location.href = `/myprofile/${userId}`;
+        }
+    }
+
     return (
         <div className="absolute w-[95%] md:w-[70%] lg:w-3/5 h-[calc(100vh-80px)] left-1/2 -translate-x-1/2 p-6">
             <div className="h-aute bg-white flex flex-col justify-center items-center p-3 text-2xl gap-4">
                 <div className="pt-3 flex flex-col items-center justify-center gap-2">
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
                     <div className="flex jusify-center items-center gap-2 pl-5 text-gray-700">
-                        {isEditting ? <Input className="w-32 h-7 border border-gray-700 p-1" /> : uniqueData.name}
+                        {isEditting ? <Input name="postTitle" className="w-32 h-7 border border-gray-700 p-1 text-lg" value={username ?? ""} onChange={handleInputChenge}/> : uniqueData.name}
                         {isEditting ?
-                            <Button onClick={() => setIsEditting(!isEditting)} className="text-xs bg-gray-700 hover:bg-gray-600 text-white p-1 rounded-lg">Edit</Button>
+                            <form action={handleUpdateUsernameAction}><Button className="text-xs bg-gray-700 hover:bg-gray-600 text-white p-1 rounded-lg">Edit</Button></form>
                             :
                             <PencilIcon className="w-5 h-5 text-gray-500 cursor-pointer" onClick={() => setIsEditting(!isEditting)} />
                         }
