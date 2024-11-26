@@ -75,14 +75,14 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
             <div className="h-aute bg-white flex flex-col justify-center items-center p-3 text-2xl gap-4">
                 <div className="pt-3 flex flex-col items-center justify-center gap-2">
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
-                    <div className="flex jusify-center items-center gap-2 pl-5 text-gray-700">
+                    <form action={handleUpdateUsernameAction} className="flex jusify-center items-center gap-2 pl-5 text-gray-700">
                         {isEditting ? <Input name="postTitle" className="w-32 h-7 border border-gray-700 p-1 text-lg" value={username ?? ""} onChange={handleInputChenge}/> : uniqueData.name}
                         {isEditting ?
-                            <form action={handleUpdateUsernameAction}><Button className="text-xs bg-gray-700 hover:bg-gray-600 text-white p-1 rounded-lg">Edit</Button></form>
+                            <Button type="submit" className="text-xs bg-gray-700 hover:bg-gray-600 text-white p-1 rounded-lg">Edit</Button>
                             :
                             <PencilIcon className="w-5 h-5 text-gray-500 cursor-pointer" onClick={() => setIsEditting(!isEditting)} />
                         }
-                    </div>
+                    </form>
                     <div className="flex items-center jusitfy-center gap-2">
                         <Button className="bg-gray-700 hover:bg-gray-600 text-white text-base p-1 w-16" onClick={() => signOut({ callbackUrl: "/" })}>Logout</Button>
                         <form
