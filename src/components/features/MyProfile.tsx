@@ -81,7 +81,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
     }
 
     return (
-        <div className="absolute w-[95%] md:w-[70%] lg:w-3/5 h-[calc(100vh-80px)] left-1/2 -translate-x-1/2 p-6">
+        <div className="absolute z-10 w-[95%] md:w-[70%] lg:w-3/5 h-[calc(100vh-80px)] left-1/2 -translate-x-1/2 p-6">
             <div className="h-aute bg-white flex flex-col justify-center items-center p-3 text-2xl gap-4">
                 <div className="pt-3 flex flex-col items-center justify-center gap-2">
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
@@ -100,7 +100,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                     {err ? <span className="text-sm xs:text-lg text-center text-red-500">{err}</span> : <></>}
                 </div>
                 {isModalOpen && (
-                    <div className="fixed w-full inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="fixed w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
                         <div className="bg-white p-6 rounded-lg">
                             <h3 className="text-xl font-bold mb-4">Are you sure you want to delete it?</h3>
                             <p>Once you delete, it cannot be restored.</p>
