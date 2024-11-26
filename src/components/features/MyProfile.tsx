@@ -60,10 +60,10 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
             <div className="h-aute bg-white flex flex-col justify-center items-center p-3 text-2xl gap-4">
                 <div className="pt-3 flex flex-col items-center justify-center gap-2">
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
-                    <div className="flex jusify-center items-center gap-2 pl-4 text-gray-700">
-                        {isEditting ? <Input className="w-32 border border-gray-700 p-1 outline: none " /> : uniqueData.name}
+                    <div className="flex jusify-center items-center gap-2 pl-5 text-gray-700">
+                        {isEditting ? <Input className="w-32 h-7 border border-gray-700 p-1" /> : uniqueData.name}
                         {isEditting ?
-                            <Button onClick={() => setIsEditting(!isEditting)} className="text-xs bg-gray-700 hover:bg-gray-600 text-white">Update</Button>
+                            <Button onClick={() => setIsEditting(!isEditting)} className="text-xs bg-gray-700 hover:bg-gray-600 text-white p-1 rounded-lg">Edit</Button>
                             :
                             <PencilIcon className="w-5 h-5 text-gray-500 cursor-pointer" onClick={() => setIsEditting(!isEditting)} />
                         }
