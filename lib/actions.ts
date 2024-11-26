@@ -325,6 +325,7 @@ export async function updateUsernameAction(
       .min(1, "please enter a title")
       .max(10, "please enter a title within the 10 word limit");
     const validatedUsername = usernameSchema.parse(username);
+    
     await prisma.user.update({
       where: {
         id: userId,
@@ -333,6 +334,7 @@ export async function updateUsernameAction(
         name: validatedUsername,
       },
     });
+
     return {
       error: "",
       success: true,

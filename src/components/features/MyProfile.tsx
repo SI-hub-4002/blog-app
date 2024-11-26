@@ -76,7 +76,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                 <div className="pt-3 flex flex-col items-center justify-center gap-2">
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
                     <form action={handleUpdateUsernameAction} className="flex jusify-center items-center gap-2 pl-5 text-gray-700">
-                        {isEditting ? <Input name="postTitle" className="w-32 h-7 border border-gray-700 p-1 text-lg" value={username ?? ""} onChange={handleInputChenge}/> : uniqueData.name}
+                        {isEditting ? <Input name="username" className="w-32 h-7 border border-gray-700 p-1 text-lg" value={username ?? ""} onChange={handleInputChenge}/> : uniqueData.name}
                         {isEditting ?
                             <Button type="submit" className="text-xs bg-gray-700 hover:bg-gray-600 text-white p-1 rounded-lg">Edit</Button>
                             :
