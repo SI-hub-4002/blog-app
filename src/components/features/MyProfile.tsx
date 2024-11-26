@@ -99,14 +99,14 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                     {err ? <span className="text-sm xs:text-lg text-center text-red-500">{err}</span> : <></>}
                 </div>
                 {isModalOpen && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="fixed w-full inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                         <div className="bg-white p-6 rounded-lg">
-                            <h3 className="text-xl font-bold mb-4">本当に削除しますか？</h3>
-                            <p>アカウントを削除すると復元できません。</p>
+                            <h3 className="text-xl font-bold mb-4">Are you sure you want to delete it?</h3>
+                            <p>Once you delete your account, it cannot be restored.</p>
                             <div className="mt-4 flex justify-between">
-                                <Button onClick={closeModal} className="bg-gray-500 text-white">キャンセル</Button>
+                                <Button onClick={closeModal} className="bg-gray-700 hover:bg-gray-600 text-white p-1 text-xl">Cancel</Button>
                                 <form onSubmit={handleUserDeleteAction}>
-                                    <Button className="bg-red-700 text-white">削除</Button>
+                                    <Button className="bg-red-500 hover:bg-red-400 text-white p-1 text-xl">Delete</Button>
                                 </form>
                             </div>
                         </div>
