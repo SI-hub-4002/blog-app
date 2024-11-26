@@ -1,5 +1,5 @@
 import prisma from "../../../../lib/prisma";
-import ProfileLayout from "@/components/features/ProfileLayout";
+import ProfileLayout from "@/components/features/UserProfile";
 
 interface Params {
     id: string;
