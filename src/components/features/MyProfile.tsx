@@ -82,7 +82,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
 
     return (
         <div className="absolute w-[95%] md:w-[70%] lg:w-3/5 h-[calc(100vh-80px)] left-1/2 -translate-x-1/2 p-6">
-            <div className="h-aute w-full bg-white flex flex-col justify-center items-center p-3 text-2xl gap-4">
+            <div className="h-aute bg-white flex flex-col justify-center items-center p-3 text-2xl gap-4">
                 <div className="pt-3 flex flex-col items-center justify-center gap-2">
                     <Image width={100} height={100} className="rounded-full" src={uniqueData.image} alt="User's profile picture" />
                     <form action={handleUpdateUsernameAction} className="flex jusify-center items-center gap-2 pl-5 text-gray-700">
