@@ -50,7 +50,7 @@ export default function ProfileLayout({ data }: ProfileLayoutProps) {
                             </Button>
                         </form>
                         :
-                        <Link href="/sign-up" className="font-normal text-sm p-1 w-20 bg-gray-700 text-white hover:bg-gray-600 rounded-xl flex justify-center items-center">
+                        <Link href="/signin" className="font-normal text-sm p-1 w-20 bg-gray-700 text-white hover:bg-gray-600 rounded-xl flex justify-center items-center">
                             follow
                         </Link>
                     }
