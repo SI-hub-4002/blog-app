@@ -9,6 +9,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <head>
+        <title>N-Blog</title> 
+      </head>
       <body className="relative h-screen bg-slate-50">
         <SessionProviders>
           <Navigation />
