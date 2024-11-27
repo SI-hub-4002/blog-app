@@ -98,7 +98,7 @@ export default function BlogPageLayout({ postsProps, usersProps }: BlogPageLayou
                         </div>
                         {uniquePostData.createdAt.toLocaleDateString()}
                     </div>
-                    <div className="pt-4 pl-2 pr-2 text-base sm:text-xl break-words">
+                    <div className="pt-4 pl-2 pr-2 text-base sm:text-xl break-words overflow-auto">
                         {uniquePostData.content}
                     </div>
                 </div>
