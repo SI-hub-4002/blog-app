@@ -8,7 +8,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="jp">
+    <html lang="ja">
       <body className="relative h-screen bg-slate-50">
         <SessionProviders>
           <Navigation />
