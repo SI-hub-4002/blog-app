@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { ProfileLayoutProps } from "@/interface/interface";
 import { signOut } from "next-auth/react";
 import Input from "../elements/Input";
+import Modal from "./ModalWindow";
 
 export default function MyProfileLayout({ data }: ProfileLayoutProps) {
     const uniqueData = data[0]
@@ -43,7 +44,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
         try {
             await postDeleteAction(postId);
         } catch {
-            setErr("posts that have been liked cannot be deleted");
+            setErr("post could not be deleted");
         }
     };
 
@@ -99,20 +100,7 @@ export default function MyProfileLayout({ data }: ProfileLayoutProps) {
                     </div>
                     {err ? <span className="text-sm xs:text-lg text-center text-red-500">{err}</span> : <></>}
                 </div>
-                {isModalOpen && (
-                    <div className="fixed w-full inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                        <div className="bg-white p-6 rounded-lg">
-                            <h3 className="text-xl font-bold mb-4">Are you sure you want to delete it?</h3>
-                            <p>Once you delete, it cannot be restored.</p>
-                            <div className="mt-4 flex justify-between">
-                                <Button onClick={closeModal} className="bg-gray-700 hover:bg-gray-600 text-white p-1 text-xl">Cancel</Button>
-                                <form onSubmit={handleUserDeleteAction}>
-                                    <Button className="bg-red-500 hover:bg-red-400 text-white p-1 text-xl">Delete</Button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <Modal isModalOpen={isModalOpen} closeModal={closeModal} handleUserDeleteAction={handleUserDeleteAction} />
                 <div className="flex justify-center items-center text-sm text-black pb-3 border-b">
                     <div className="w-20 sm:w-24 border-r flex flex-col gap-2 justify-center items-center">
                         {followingUserDataArray.flat(Infinity).length}

@@ -1,10 +1,10 @@
-# blog_app
+# N-Blog
 簡易的なブログアプリです。<br>
 自分のブログを投稿したり、他人のブログを閲覧することができます。<br>
 レスポンシブ対応しているので、スマホからもご確認いただけます。
 
 # URL
-[url](http://blog-app-phi-topaz.vercel.app/)<br>
+http://blog-app-phi-topaz.vercel.app/<br>
 デフォルトではゲストログイン状態になっており、以下の機能を制限しています。
 - 投稿機能
 - いいね機能

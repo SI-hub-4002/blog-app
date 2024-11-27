@@ -85,9 +85,16 @@ export type FollowDataArray = FollowData[];
 
 export interface ProfileLayoutProps {
     data: ProfileData[]
-}
+};
 
 export interface StatProps {
     count: number,
     label: string,
-}
+};
+
+export interface ModalProps {
+    isModalOpen: boolean,
+    closeModal: () => void,
+    handleUserDeleteAction: (e: React.FormEvent) => Promise<void>,
+};
+
