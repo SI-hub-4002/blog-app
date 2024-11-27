@@ -2,8 +2,6 @@
 簡易的なブログアプリです。<br>
 自分のブログを投稿したり、他人のブログを閲覧することができます。<br>
 レスポンシブ対応しているので、スマホからもご確認いただけます。
-<img width="1400" src="/images/スクリーンショット 2024-11-27 124045.png">
-<img width="350" height="700" src= "/images/S__37634053.jpg">
 
 # URL
 http://blog-app-phi-topaz.vercel.app/<br>
